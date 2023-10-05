@@ -24,7 +24,7 @@ fun main() {
     val sistema = looca.sistema
     val processos = looca.grupoDeProcessos
     val dadosJanelas = looca.grupoDeJanelas
-    val redes = looca.rede.grupoDeInterfaces.interfaces.slice(4..5)
+    val redes = looca.rede.grupoDeInterfaces.interfaces
 
     System.out.println(redes)
 
