@@ -17,7 +17,6 @@ INSERT INTO UnidadeDeMedida (Tipo_de_Dado, Representacao) VALUES
 ('Bytes', 'B'),
 ('Porcemtagem', '%');
 
-
 /* DADOS SIMULADOS PORÉM IMPORTANTES NA EXECUÇÃO DA API JÁ QUE ELA PRECISA DE UMA EMPRESA EXISTENTE*/
 
 -- Inserir dados na tabela Empresa
@@ -27,7 +26,6 @@ VALUES ('Via Mobilidade', '12345678901234');
 -- Inserir dados na tabela Endereco
 INSERT INTO Endereco (cep, num, rua, bairro, cidade, estado, pais, fkEmpresa)
 VALUES ('12345678', 123, 'Rua Exemplo', 'Bairro Exemplo', 'Cidade Exemplo', 'Estado Exemplo', 'Pais Exemplo', 1);
-
 
 -- Inserir dados na tabela Colaborador
 INSERT INTO Colaborador (nomeColaborador, cpfColaborador, emailColaborador, celularColaborador, senhaColaborador, fkEmpresa, fkNivelAcesso)
@@ -44,3 +42,8 @@ INSERT INTO Componente (nomeComponente, fkMaquinaComponente, fkEmpresaComponente
 ('RAM', 1, 1),
 ('REDE', 1, 1);
 
+select * from UnidadeDeMedida;
+SELECT CONCAT(dadoColetado, ' ', Representacao) AS DadoCompleto, dtHora, nomeComponente, descricao
+FROM Monitoramento
+JOIN UnidadeDeMedida ON fkUnidadeMedida = idUnidade
+JOIN Componente ON fkComponentesMonitoramentos = idComponente;
