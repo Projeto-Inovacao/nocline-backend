@@ -1,184 +1,175 @@
-  create database nocLine;
-  use nocLine;
- 
-  
-CREATE TABLE IF NOT exists  `Empresa` (
-  `idEmpresa` INT NOT NULL,
-  `razãoSocial` VARCHAR(45) NULL,
-  `CNPJ` CHAR(14) NULL,
-  PRIMARY KEY (`idEmpresa`));
-  
-CREATE TABLE IF NOT EXISTS `Endereco` (
-  `idEndereco` INT NOT NULL,
-  `CEP` CHAR(8) NOT NULL,
-  `num` INT NOT NULL,
-  `rua` VARCHAR(45) NOT NULL,
-  `bairro` VARCHAR(45) NOT NULL,
-  `cidade` VARCHAR(45) NOT NULL,
-  `estado` VARCHAR(45) NOT NULL,
-  `pais` VARCHAR(45) NOT NULL,
-  `Complemento` VARCHAR(45)  NULL,
-  `fkEmpresa` INT NOT NULL,
-  PRIMARY KEY (`idEndereco`, `fkEmpresa`),
-  INDEX `fk_Endereco_Empresa1_idx` (`fkEmpresa` ASC) VISIBLE,
-  CONSTRAINT `fk_Endereco_Empresa1`
-    FOREIGN KEY (`fkEmpresa`)
-    REFERENCES `Empresa` (`idEmpresa`));
-    
-    CREATE TABLE IF NOT EXISTS `Máquina` (
-  `idMáquina` INT NOT NULL,
-  `IP` VARCHAR(45) NOT NULL,
-  `SO` VARCHAR(45) NULL,
-  `modelo` VARCHAR(45) NULL,
-  `fkEmpresa` INT NOT NULL,
-  PRIMARY KEY (`idMáquina`, `fkEmpresa`),
-  INDEX `fk_Máquina_Empresa1_idx` (`fkEmpresa` ASC) VISIBLE,
-  CONSTRAINT `fk_Máquina_Empresa1`
-    FOREIGN KEY (`fkEmpresa`)
-    REFERENCES `Empresa` (`idEmpresa`));
-    
-    CREATE TABLE IF NOT EXISTS `Janelas` (
-  `idJanelas` INT NOT NULL,
-  `nomeJanela` VARCHAR(45) NULL,
-  `Data` DATE NULL,
-  `Hora` TIME NULL,
-  `fkMaquina` INT NOT NULL,
-  `fkEmpresa` INT NOT NULL,
-  PRIMARY KEY (`idJanelas`),
-  INDEX `fk_Janelas_Máquina1_idx` (`fkMaquina` ASC, `fkEmpresa` ASC) VISIBLE,
-  CONSTRAINT `fk_Janelas_Máquina1`
-    FOREIGN KEY (`fkMaquina` , `fkEmpresa`)
-    REFERENCES `Máquina` (`idMáquina` , `fkEmpresa`));
-    
-    CREATE TABLE IF NOT EXISTS`Componente` (
-  `idComponente` INT NOT NULL,
-  `nomeComponente` VARCHAR(45) NULL,
-  `fkMáquinaComponente` INT NOT NULL,
-  `fkEmpresaComponente` INT NOT NULL,
-  PRIMARY KEY (`idComponente`, `fkMáquinaComponente`, `fkEmpresaComponente`),
-  INDEX `fk_Componentes_Máquina1_idx` (`fkMáquinaComponente` ASC, `fkEmpresaComponente` ASC) VISIBLE,
-  CONSTRAINT `fk_Componentes_Máquina1`
-    FOREIGN KEY (`fkMáquinaComponente` , `fkEmpresaComponente`)
-    REFERENCES `Máquina` (`idMáquina` , `fkEmpresa`));
-    
-    CREATE TABLE IF NOT EXISTS `UnidadeDeMedida` (
-  `idUnidade` INT NOT NULL,
-  `Tipo_de_Dado` VARCHAR(45) NULL,
-  `Representacao` CHAR(2) NULL,
-  PRIMARY KEY (`idUnidade`));
-  
-  CREATE TABLE IF NOT EXISTS `Monitoramento` (
-  `idMonitoramento` INT NOT NULL,
-  `dadoColetado` DOUBLE NOT NULL,
-  `dtHora` DATETIME NOT NULL,
-  `fkComponentesMonitoramentos` INT NOT NULL,
-  `fkMáquinaMonitoramentos` INT NOT NULL,
-  `fkEmpresaMonitoramentos` INT NOT NULL,
-  `fkUnidadeMedida` INT NOT NULL,
-  PRIMARY KEY (`idMonitoramento`, `fkComponentesMonitoramentos`, `fkMáquinaMonitoramentos`, `fkEmpresaMonitoramentos`, `fkUnidadeMedida`),
-  INDEX `fk_Monitoramento_Componentes1_idx` (`fkComponentesMonitoramentos` ASC, `fkMáquinaMonitoramentos` ASC, `fkEmpresaMonitoramentos` ASC) VISIBLE,
-  INDEX `fk_Monitoramento_UnidadeDeMedida1_idx` (`fkUnidadeMedida` ASC) VISIBLE,
-  CONSTRAINT `fk_Monitoramento_Componentes1`
-    FOREIGN KEY (`fkComponentesMonitoramentos` , `fkMáquinaMonitoramentos` , `fkEmpresaMonitoramentos`)
-    REFERENCES `Componente` (`idComponente` , `fkMáquinaComponente` , `fkEmpresaComponente`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Monitoramento_UnidadeDeMedida1`
-    FOREIGN KEY (`fkUnidadeMedida`)
-    REFERENCES `UnidadeDeMedida` (`idUnidade`));
-    
-    CREATE TABLE IF NOT EXISTS `Aviso` (
-  `idAviso` INT NOT NULL,
-  `dtHora` DATETIME NULL,
-  `Descricao` VARCHAR(45) NULL,
-  `fkMonitoramento` INT NOT NULL,
-  PRIMARY KEY (`idAviso`, `fkMonitoramento`),
-  INDEX `fk_Monitoramento_has_Usuarios_Monitoramento1_idx` (`fkMonitoramento` ASC) VISIBLE,
-  CONSTRAINT `fk_Monitoramento_has_Usuarios_Monitoramento1`
-    FOREIGN KEY (`fkMonitoramento`)
-    REFERENCES `Monitoramento` (`idMonitoramento`));
-    
-CREATE TABLE IF NOT EXISTS `Permissao` (
-  `idPermissao` INT NOT NULL,
-  `Visualizar` TINYINT NULL,
-  `Excluir` TINYINT NULL,
-  `Alterar` TINYINT NULL,
-  `Cadastrar` TINYINT NULL,
-  `maquinas` TINYINT NULL,
-  `equipe_corporativa` TINYINT NULL,
-  PRIMARY KEY (`idPermissao`));
-  
-  CREATE TABLE IF NOT EXISTS `nivelAcesso` (
-  `idnivelAcesso` INT NOT NULL,
-  `Sigla` CHAR(3) NULL,
-  `descricao` VARCHAR(100) NULL,
-  `fkPermissao` INT NOT NULL,
-  PRIMARY KEY (`idnivelAcesso`, `fkPermissao`),
-  INDEX `fk_nivelAcesso_Permissao1_idx` (`fkPermissao` ASC) VISIBLE,
-  CONSTRAINT `fk_nivelAcesso_Permissao1`
-    FOREIGN KEY (`fkPermissao`)
-    REFERENCES`Permissao` (`idPermissao`)
-);
-CREATE TABLE IF NOT EXISTS `Colaborador` (
-  `idColaborador` INT NOT NULL,
-  `nome` VARCHAR(200) NULL,
-  `email_corporativo` VARCHAR(45) NULL,
-  `senha` VARCHAR(255) NULL,
-  `telCel` CHAR(11) NULL,
-  `fkEmpresa` INT NOT NULL,
-  `fkNivelAcesso` INT NOT NULL,
-  PRIMARY KEY (`idColaborador`, `fkEmpresa`),
-  INDEX `fk_Usuarios_Empresa1_idx` (`fkEmpresa` ASC) VISIBLE,
-  INDEX `fk_Colaborador_nivelAcesso1_idx` (`fkNivelAcesso` ASC) VISIBLE,
-  CONSTRAINT `fk_Usuarios_Empresa1`
-    FOREIGN KEY (`fkEmpresa`)
-    REFERENCES `Empresa` (`idEmpresa`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Colaborador_nivelAcesso1`
-    FOREIGN KEY (`fkNivelAcesso`)
-    REFERENCES `nivelAcesso` (`idnivelAcesso`));
-    
-    CREATE TABLE IF NOT EXISTS `ControleAcesso` (
-  `fkColaborador` INT NOT NULL,
-  `fkEmpresaColaborador` INT NOT NULL,
-  `fkMáquina` INT NOT NULL,
-  `fkEmpresaMáquina` INT NOT NULL,
-  `InicioSessao` DATETIME NOT NULL,
-  `FimSessao` DATETIME NULL,
-  PRIMARY KEY (`fkColaborador`, `fkEmpresaColaborador`, `fkMáquina`, `fkEmpresaMáquina`),
-  INDEX `fk_Usuarios_has_Máquina_Máquina1_idx` (`fkMáquina` ASC, `fkEmpresaMáquina` ASC) VISIBLE,
-  INDEX `fk_Usuarios_has_Máquina_Usuarios1_idx` (`fkColaborador` ASC, `fkEmpresaColaborador` ASC) VISIBLE,
-  CONSTRAINT `fk_Usuarios_has_Máquina_Usuarios1`
-    FOREIGN KEY (`fkColaborador` , `fkEmpresaColaborador`)
-    REFERENCES `Colaborador` (`idColaborador` , `fkEmpresa`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Usuarios_has_Máquina_Máquina1`
-    FOREIGN KEY (`fkMáquina` , `fkEmpresaMáquina`)
-    REFERENCES`Máquina` (`idMáquina` , `fkEmpresa`));
-    
-    CREATE TABLE IF NOT EXISTS `Planos` (
-  `idPlano` INT NOT NULL AUTO_INCREMENT,
-  `Essentials` TINYINT NULL,
-  `Master` TINYINT NULL,
-  `plus` TINYINT NULL,
-  `fkEmpresa` INT NOT NULL,
-  INDEX `fk_Planos_Empresa1_idx` (`fkEmpresa` ASC) VISIBLE,
-  PRIMARY KEY (`idPlano`),
-  CONSTRAINT `fk_Planos_Empresa1`
-    FOREIGN KEY (`fkEmpresa`)
-    REFERENCES `Empresa` (`idEmpresa`));
+CREATE DATABASE IF NOT exists nocLine;
+-- DROP DATABASE nocLine;
+USE nocLine;
 
-CREATE TABLE IF NOT EXISTS`Cartao` (
-  `idCartao` INT NOT NULL,
-  `NumCartao` CHAR(4) NULL,
-  `Validade` DATE NULL,
-  `CVV` CHAR(3) NULL,
-  `Bandeira` VARCHAR(50) NULL,
-  `fkEmpresa` INT NOT NULL,
-  PRIMARY KEY (`idCartao`),
-  INDEX `fk_Cartao_Empresa1_idx` (`fkEmpresa` ASC) VISIBLE,
-  CONSTRAINT `fk_Cartao_Empresa1`
-    FOREIGN KEY (`fkEmpresa`)
-    REFERENCES `Empresa` (`idEmpresa`));
+CREATE TABLE IF NOT exists  Empresa (
+  idEmpresa INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+  razaoSocial VARCHAR(45) NOT NULL,
+  CNPJ CHAR(14) NOT NULL UNIQUE
+  );
+  
+CREATE TABLE IF NOT EXISTS Endereco (
+  idEndereco INT AUTO_INCREMENT NOT NULL,
+  cep CHAR(8) NOT NULL,
+  num INT NOT NULL,
+  rua VARCHAR(45) NOT NULL,
+  bairro VARCHAR(45) NOT NULL,
+  cidade VARCHAR(45) NOT NULL,
+  estado VARCHAR(45) NOT NULL,
+  pais VARCHAR(45) NOT NULL,
+  complemento VARCHAR(45)  NULL,
+  fkEmpresa INT NOT NULL,
+  CONSTRAINT pkEndereco
+    PRIMARY KEY (idEndereco, fkEmpresa),
+  CONSTRAINT fk_Endereco_Empresa1
+    FOREIGN KEY (fkEmpresa)
+    REFERENCES Empresa (idEmpresa));
+    
+    CREATE TABLE IF NOT EXISTS Maquina (
+  idMaquina INT AUTO_INCREMENT NOT NULL,
+  numeroSerie VARCHAR(45) NOT NULL,
+  so VARCHAR(45) NOT NULL,
+  modelo VARCHAR(45) NULL,
+ setor VARCHAR(45) NULL,
+  fkEmpresa INT NOT NULL,
+  CONSTRAINT pkMaquina
+    PRIMARY KEY (idMaquina, fkEmpresa),
+  CONSTRAINT fkMaquinaEmpresa
+    FOREIGN KEY (fkEmpresa)
+    REFERENCES Empresa (idEmpresa));
+    
+    CREATE TABLE IF NOT EXISTS Janelas (
+  idJanelas INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+  nomeJanela VARCHAR(45) NULL,
+  Data DATE NULL,
+  Hora TIME NULL,
+  fkMaquina INT NOT NULL,
+  fkEmpresa INT NOT NULL,
+  CONSTRAINT fkJanelasMaquina
+    FOREIGN KEY (fkMaquina , fkEmpresa)
+    REFERENCES Maquina (idMaquina , fkEmpresa));
+    
+    CREATE TABLE IF NOT EXISTS Componente (
+  idComponente INT AUTO_INCREMENT NOT NULL,
+  nomeComponente VARCHAR(45) NULL,
+  fkMaquinaComponente INT NOT NULL,
+  fkEmpresaComponente INT NOT NULL,
+  CONSTRAINT pkComponente
+    PRIMARY KEY (idComponente, fkMaquinaComponente, fkEmpresaComponente),
+  CONSTRAINT fk_Componentes_Maquina1
+    FOREIGN KEY (fkMaquinaComponente , fkEmpresaComponente)
+    REFERENCES Maquina (idMaquina , fkEmpresa));
+    
+    CREATE TABLE IF NOT EXISTS UnidadeDeMedida (
+  idUnidade INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+  Tipo_de_Dado VARCHAR(45) NULL,
+  Representacao CHAR(2) NULL
+ );
+  
+  
+  CREATE TABLE IF NOT EXISTS Monitoramento (
+  idMonitoramento INT AUTO_INCREMENT NOT NULL,
+  dadoColetado DOUBLE NOT NULL,
+  dtHora DATETIME NOT NULL,
+  descricao VARCHAR(45) NOT NULL,
+  fkComponentesMonitoramentos INT NOT NULL,
+  fkMaquinaMonitoramentos INT NOT NULL,
+  fkEmpresaMonitoramentos INT NOT NULL,
+  fkUnidadeMedida INT NOT NULL,
+  CONSTRAINT pkMonitoramento
+    PRIMARY KEY (idMonitoramento, fkComponentesMonitoramentos, fkMaquinaMonitoramentos, fkEmpresaMonitoramentos, fkUnidadeMedida),
+  CONSTRAINT fkMonitoramentoComponentes
+    FOREIGN KEY (fkComponentesMonitoramentos , fkMaquinaMonitoramentos , fkEmpresaMonitoramentos)
+    REFERENCES Componente (idComponente , fkMaquinaComponente , fkEmpresaComponente),
+  CONSTRAINT fkMonitoramentoUnidadeDeMedida
+    FOREIGN KEY (fkUnidadeMedida)
+    REFERENCES UnidadeDeMedida (idUnidade));
+    
+    CREATE TABLE IF NOT EXISTS Aviso (
+  idAviso INT AUTO_INCREMENT NOT NULL,
+  dtHora DATETIME NULL,
+  Descricao VARCHAR(45) NULL,
+  fkMonitoramento INT NOT NULL,
+  CONSTRAINT pkAviso
+    PRIMARY KEY (idAviso, fkMonitoramento),
+  CONSTRAINT fkMonitoramentoAvisos
+    FOREIGN KEY (fkMonitoramento)
+    REFERENCES Monitoramento (idMonitoramento));
+    
+CREATE TABLE IF NOT EXISTS Permissao (
+  idPermissao INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+  Visualizar TINYINT NULL,
+  Excluir TINYINT NULL,
+  Alterar TINYINT NULL,
+  Cadastrar TINYINT NULL,
+  maquinas TINYINT NULL,
+  equipe_corporativa TINYINT NULL
+  );
+  
+  CREATE TABLE IF NOT EXISTS nivelAcesso (
+  idNivelAcesso INT AUTO_INCREMENT NOT NULL,
+  Sigla CHAR(3) NULL,
+  descricao VARCHAR(100) NULL,
+  fkPermissao INT NOT NULL,
+  CONSTRAINT pkNivelAcesso
+    PRIMARY KEY (idnivelAcesso, fkPermissao),
+  CONSTRAINT fk_nivelAcesso_Permissao1
+    FOREIGN KEY (fkPermissao)
+    REFERENCES Permissao (idPermissao)
+);
+
+CREATE TABLE IF NOT EXISTS Colaborador (
+  idColaborador INT AUTO_INCREMENT NOT NULL,
+  nomeColaborador VARCHAR(200) NOT NULL,
+  cpfColaborador CHAR(14) NOT NULL,
+  emailColaborador VARCHAR(45) NOT NULL,
+  celularColaborador CHAR(11) NULL,
+  senhaColaborador VARCHAR(255) NOT NULL,
+  fkEmpresa INT NOT NULL,
+  fkNivelAcesso INT NOT NULL,
+  CONSTRAINT pkColaborador
+    PRIMARY KEY (idColaborador, fkEmpresa),
+  CONSTRAINT fkUsuariosEmpresa
+    FOREIGN KEY (fkEmpresa)
+    REFERENCES Empresa (idEmpresa),
+  CONSTRAINT fkColaboradorNivelAcesso
+    FOREIGN KEY (fkNivelAcesso)
+    REFERENCES nivelAcesso (idNivelAcesso));
+    
+    
+    CREATE TABLE IF NOT EXISTS ControleAcesso (
+  fkColaborador INT NOT NULL,
+  fkEmpresaColaborador INT NOT NULL,
+  fkMaquina INT NOT NULL,
+  fkEmpresaMaquina INT NOT NULL,
+  InicioSessao DATETIME NOT NULL,
+  FimSessao DATETIME NULL,
+  CONSTRAINT pkControleAcesso
+	PRIMARY KEY (fkColaborador, fkEmpresaColaborador, fkMaquina, fkEmpresaMaquina),
+  CONSTRAINT fkControleUsuarioEmpresa
+    FOREIGN KEY (fkColaborador , fkEmpresaColaborador)
+    REFERENCES Colaborador (idColaborador , fkEmpresa),
+  CONSTRAINT fkControleMaquinaEmpresa
+    FOREIGN KEY (fkMaquina , fkEmpresaMaquina)
+    REFERENCES Maquina (idMaquina , fkEmpresa));
+    
+    CREATE TABLE IF NOT EXISTS Planos (
+  idPlano INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  Essentials TINYINT NULL,
+  Master TINYINT NULL,
+  plus TINYINT NULL,
+  fkEmpresa INT NOT NULL,
+  CONSTRAINT fkPlanosEmpresa
+    FOREIGN KEY (fkEmpresa)
+    REFERENCES Empresa (idEmpresa));
+
+CREATE TABLE IF NOT EXISTS Cartao (
+  idCartao INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+  NumCartao CHAR(4) NULL,
+  Validade DATE NULL,
+  CVV CHAR(3) NULL,
+  Bandeira VARCHAR(50) NULL,
+  fkEmpresa INT NOT NULL,
+  CONSTRAINT fkCartaoEmpresa
+    FOREIGN KEY (fkEmpresa)
+    REFERENCES Empresa (idEmpresa));
