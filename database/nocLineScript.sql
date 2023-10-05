@@ -136,7 +136,10 @@ CREATE TABLE IF NOT EXISTS Colaborador (
     FOREIGN KEY (fkNivelAcesso)
     REFERENCES nivelAcesso (idNivelAcesso));
     
+<<<<<<< HEAD
     
+=======
+>>>>>>> 2818011f1cd9e2df09494770ed2269835bf5144b
     CREATE TABLE IF NOT EXISTS ControleAcesso (
   fkColaborador INT NOT NULL,
   fkEmpresaColaborador INT NOT NULL,

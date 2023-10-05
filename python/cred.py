@@ -1,2 +1,2 @@
-usr = 'admin'
-pswd = 'admin'
+usr = 'noc_line'
+pswd = 'noc_line134#'
