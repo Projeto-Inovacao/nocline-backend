@@ -2,7 +2,7 @@ import psutil
 import threading
 import time
 import keyboard
-#import datetime
+import socket
 import mysql.connector
 from cred import usr, pswd
 
@@ -10,11 +10,9 @@ cpu = psutil.cpu_times()
 processador = psutil.cpu_percent(interval=1)
 memoria = psutil.virtual_memory()
 disco = psutil.disk_usage("/")
-
-fkMaquinaMonitoramentos = 1
-fkEmpresaMonitoramentos = 1
-
+hostname = socket.gethostname()
 event = threading.Event()
+
 print(event)
 
 def stop(): #define o evento para parar o monitoramento (tecla esc)
@@ -43,19 +41,33 @@ while not event.is_set():
                 db_info = mydb.get_server_info() #obtem informações do servidor mysql
                 
                 mycursor = mydb.cursor() #ladainha do sql
-                sql_query = """
+        
+                sql_query = "SELECT idMaquina, fkEmpresa FROM maquina WHERE hostname = %s;"
+        
+                mycursor.execute(sql_query, (hostname,))
+
+                # Obtém o resultado da consulta
+                result = mycursor.fetchone()  # Você pode usar fetchall() se houver múltiplas linhas de resultado
+
+                if result:
+                    fkMaquinaMonitoramentos, fkEmpresaMonitoramentos = result  # Desempacota os valores
+
+                    sql_query = """
                 INSERT INTO Monitoramento (dadoColetado, dtHora, descricao, fkComponentesMonitoramentos, fkMaquinaMonitoramentos, fkEmpresaMonitoramentos, fkUnidadeMedida)
-                VALUES (%s, now(), 'uso cpu', 1, %s, %s, (SELECT idUnidade FROM UnidadeDeMedida WHERE Representacao = '%')),
-                       (%s, now(), 'disco livre', 2, %s, %s, (SELECT idUnidade FROM UnidadeDeMedida WHERE Representacao = 'B')),
-                       (%s, now(), 'disco total', 2, %s, %s, (SELECT idUnidade FROM UnidadeDeMedida WHERE Representacao = 'B')),
-                       (%s, now(), 'memoria disponivel', 3, %s, %s, (SELECT idUnidade FROM UnidadeDeMedida WHERE Representacao = 'B')),
-                       (%s, now(), 'memoria total', 3, %s, %s, (SELECT idUnidade FROM UnidadeDeMedida WHERE Representacao = 'B'));
+                VALUES (%s, now(), 'uso cpu', 1, %s, %s, (SELECT idUnidade FROM unidadeMedida WHERE representacao = '%')),
+                       (%s, now(), 'disco livre', 2, %s, %s, (SELECT idUnidade FROM unidadeMedida WHERE representacao = 'B')),
+                       (%s, now(), 'disco total', 2, %s, %s, (SELECT idUnidade FROM unidadeMedida WHERE representacao = 'B')),
+                       (%s, now(), 'memoria disponivel', 3, %s, %s, (SELECT idUnidade FROM unidadeMedida WHERE representacao = 'B')),
+                       (%s, now(), 'memoria total', 3, %s, %s, (SELECT idUnidade FROM unidadeMedida WHERE representacao = 'B'));
             """
-                val = [cpu_percentual, fkMaquinaMonitoramentos, fkEmpresaMonitoramentos, disco_livre, fkMaquinaMonitoramentos, fkEmpresaMonitoramentos, disco_total, fkMaquinaMonitoramentos, fkEmpresaMonitoramentos, memoria_disponivel, fkMaquinaMonitoramentos, fkEmpresaMonitoramentos, memoria_total, fkMaquinaMonitoramentos, fkEmpresaMonitoramentos]
-                mycursor.execute(sql_query, val)
-                mydb.commit() #se tiver tudo ok, aqui ele da o insert no banco
-                print(mycursor.rowcount, "registros inseridos no banco") #esse rowcount fala o número de registros inseridos de uma vez
-                print("\r\n")
+                    val = [cpu_percentual, fkMaquinaMonitoramentos, fkEmpresaMonitoramentos, disco_livre, fkMaquinaMonitoramentos, fkEmpresaMonitoramentos, disco_total, fkMaquinaMonitoramentos, fkEmpresaMonitoramentos, memoria_disponivel, fkMaquinaMonitoramentos, fkEmpresaMonitoramentos, memoria_total, fkMaquinaMonitoramentos, fkEmpresaMonitoramentos]
+                    mycursor.execute(sql_query, val)
+                    mydb.commit() #se tiver tudo ok, aqui ele da o insert no banco
+                    print(mycursor.rowcount, "registros inseridos no banco") #esse rowcount fala o número de registros inseridos de uma vez
+                    print("\r\n")
+                else:
+                    print("A maquina " + hostname + " não foi cadastrada no site, cadastre ela para que seja feita captura!")
+
         except mysql.connector.Error as e: #aqui é se der ruim com o banco, cai nesse erro
             print("Erro ao conectar com o MySQL", e)
         finally:
