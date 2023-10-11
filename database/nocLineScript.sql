@@ -1,12 +1,23 @@
 CREATE DATABASE IF NOT exists nocLine;
--- DROP DATABASE nocLine;
+ -- DROP DATABASE nocLine;
 USE nocLine;
 
+CREATE TABLE IF NOT EXISTS planos (
+  idPlano INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  essentials TINYINT NULL,
+  master TINYINT NULL,
+  plus TINYINT NULL
+    );
+
 CREATE TABLE IF NOT EXISTS empresa (
-  idEmpresa INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  idEmpresa INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   razaoSocial VARCHAR(45) NOT NULL,
-  CNPJ CHAR(14) NULL UNIQUE
- );
+  CNPJ CHAR(14) NULL UNIQUE,
+  fkPlano INT NULL,
+  INDEX fkPlanos (fkPlano ASC) VISIBLE,
+  CONSTRAINT fkPlanos
+    FOREIGN KEY (fkPlano)
+    REFERENCES planos (idPlano));
   
 CREATE TABLE IF NOT EXISTS endereco (
   idEndereco INT NOT NULL AUTO_INCREMENT,
@@ -18,13 +29,13 @@ CREATE TABLE IF NOT EXISTS endereco (
   estado VARCHAR(45) NULL,
   pais VARCHAR(45) NULL,
   complemento VARCHAR(45) NULL,
-  fkEmpresa INT NOT NULL,
-  CONSTRAINT pkEndereco
-    PRIMARY KEY (idEndereco, fkEmpresa),
-  CONSTRAINT fkEnderecoEmpresa
-    FOREIGN KEY (fkEmpresa)
+  fkEmpresaE INT NOT NULL,
+    PRIMARY KEY (idEndereco, fkEmpresaE),
+  CONSTRAINT fkEmpresaE
+    FOREIGN KEY (fkEmpresaE)
     REFERENCES empresa (idEmpresa)
     );
+    
   
   CREATE TABLE IF NOT EXISTS nivelAcesso (
   idNivelAcesso INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
@@ -52,32 +63,25 @@ CREATE TABLE IF NOT EXISTS endereco (
     REFERENCES nivelAcesso (idNivelAcesso)
     );
   
-  
-CREATE TABLE IF NOT EXISTS planos (
-  idPlano INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  essentials TINYINT NULL,
-  master TINYINT NULL,
-  plus TINYINT NULL,
-  fkEmpresa INT NOT NULL,
-  CONSTRAINT fkPlanosEmpresa
-    FOREIGN KEY (fkEmpresa)
-    REFERENCES empresa (idEmpresa)
-    );
-    
+  CREATE TABLE IF NOT EXISTS unidadeMedida (
+  idUnidade INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  tipoDado VARCHAR(45) NULL,
+  representacao CHAR(2) NULL
+  );
+
 CREATE TABLE IF NOT EXISTS cartao (
   idCartao INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
   nCartao CHAR(16) NULL,
-  validade DATE NULL,
+  validade CHAR(4) NULL,
   cvv CHAR(3) NULL,
   bandeira VARCHAR(50) NULL,
   nomeTitular VARCHAR(45) NULL,
-  fkEmpresa INT NOT NULL,
-  CONSTRAINT fkCartaoEmpresa
-    FOREIGN KEY (fkEmpresa)
+  fkEmpresaC INT NOT NULL,
+  CONSTRAINT fkEmpresaC
+    FOREIGN KEY (fkEmpresaC)
     REFERENCES empresa (idEmpresa)
     );
   
-
 CREATE TABLE IF NOT EXISTS chat (
   idChat INT NOT NULL AUTO_INCREMENT,
   titulo VARCHAR(45) NULL,
@@ -121,6 +125,18 @@ CREATE TABLE IF NOT EXISTS janelas (
     FOREIGN KEY (fkMaquina , fkEmpresa)
     REFERENCES maquina (idMaquina , fkEmpresa)
 );
+
+CREATE TABLE IF NOT EXISTS processos (
+  PID INT PRIMARY KEY NOT NULL,
+  usoCPU DOUBLE NULL,
+  usoMemoria DOUBLE NULL,
+  memoriaVirtual DOUBLE NULL,
+  fkMaquina INT NOT NULL,
+  fkEmpresa INT NOT NULL,
+  CONSTRAINT fkProcessosMaquina
+    FOREIGN KEY (fkMaquina , fkEmpresa)
+    REFERENCES maquina (idMaquina , fkEmpresa)
+);
     
 CREATE TABLE IF NOT EXISTS componente (
   idComponente INT NOT NULL AUTO_INCREMENT,
@@ -134,11 +150,7 @@ CREATE TABLE IF NOT EXISTS componente (
     REFERENCES maquina (idMaquina , fkEmpresa)
 );
     
-CREATE TABLE IF NOT EXISTS unidadeMedida (
-  idUnidade INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  tipoDado VARCHAR(45) NULL,
-  representacao CHAR(2) NULL
-  );
+
   
 CREATE TABLE IF NOT EXISTS monitoramento (
   idMonitoramento INT NOT NULL AUTO_INCREMENT,
