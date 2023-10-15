@@ -29,10 +29,17 @@ SELECT * FROM nivelAcesso;
 
 -- Inserir dados na tabela colaborador
 INSERT INTO colaborador 
-VALUES (null, 'Nome Colaborador Exemplo', '12345678901', 'nome.colaborador@email.com', '12345678901', sha2('senha123', 256), 1, 1);
+VALUES (null, 'Nome Colaborador Exemplo', '34123', 'n@email.com', '12345678901', sha2('senha321', 256), 1, 1);
 SELECT * FROM colaborador;
 
+select 
+    * from colaborador 
+	join empresa on fkEmpresa = idEmpresa
+    WHERE email = 'n@email.com' AND senha = sha2('senha321', 256);
+
+
 -- Inserir dados na tabela planos
+
 INSERT INTO planos 
 VALUES (null, 1, 0, 0, 1);
 SELECT * FROM planos;
@@ -44,7 +51,7 @@ SELECT * FROM cartao;
 
 -- Inserir dados na tabela maquina
 INSERT INTO maquina 
-VALUES (null, '177.181.7.16', 'Windows', 'Modelo Exemplo', 'CCO', 1);
+VALUES (null, '177.181.7.16', 'Windows', 'PC TOP', 'Modelo Exemplo', 'CCO', 1);
 SELECT * FROM maquina;
 
 -- Inserir dados na tabela componente
@@ -58,6 +65,9 @@ SELECT * FROM componente;
 
 
 SELECT CONCAT(dadoColetado, ' ', Representacao) AS DadoCompleto, dtHora, nomeComponente, descricao
-FROM Monitoramento
-JOIN UnidadeDeMedida ON fkUnidadeMedida = idUnidade
-JOIN Componente ON fkComponentesMonitoramentos = idComponente;
+FROM monitoramento
+JOIN unidadeMedida ON fkUnidadeMedida = idUnidade
+JOIN componente ON fkComponentesMonitoramentos = idComponente;
+
+
+select * from monitoramento
