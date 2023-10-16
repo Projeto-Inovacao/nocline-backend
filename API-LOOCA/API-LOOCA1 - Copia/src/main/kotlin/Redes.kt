@@ -5,9 +5,7 @@ data class Redes (
     var dataHora: LocalDateTime,
     var nomeRede: String,
     var bytesEnviados: Long,
-    var bytesRecebidos: Long,
-    var pacotesEnviados: Long,
-    var pacotesRecebidos: Long,
+    var bytesRecebidos: Long
 ) {
 
 }

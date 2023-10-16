@@ -1,5 +1,6 @@
 import com.github.britooo.looca.api.core.Looca // biblioteca para capturar informações do sistema
 import com.github.britooo.looca.api.group.janelas.Janela
+import com.github.britooo.looca.api.group.processos.Processo
 import java.time.LocalDateTime // biblioteca para lidar com informações de data e hora
 import java.util.concurrent.TimeUnit // biblioteca usada para manipulação de unidades de tempo.
 
@@ -12,9 +13,12 @@ fun main() {
     val repositorio = DadosRepositorios()
     repositorio.iniciar()
 
+    //CAPTURA DE PROCESSOS
+    val novoProcesso = capturarDadosP(looca)
+    repositorio.cadastrarProcesso(novoProcesso)
+
     while (true) {
         // CAPTURA DE JANELAS
-
         // chamando a função capturarDadosJ(looca) para obter dados sobre janelas
         val novaJanela = capturarDadosJ(looca)
         repositorio.cadastrarJanela(novaJanela)
@@ -24,7 +28,6 @@ fun main() {
         // chamando a função capturarDadosR(looca) para obter dados sobre redes
         val novaRede = capturarDadosR(looca)
         repositorio.cadastrarRede(novaRede)
-
 
         // Aguarda 5 segundos antes de capturar os dados novamente
         TimeUnit.SECONDS.sleep(5)
@@ -54,8 +57,6 @@ fun capturarDadosR(looca: Looca ): Redes {
         // os dados são adicionados nas listas
         listaBytesRecebidos.add(rede.getBytesRecebidos())
         listaBytesEnviados.add(rede.getBytesEnviados())
-        listaPacotesEnviados.add(rede.pacotesEnviados)
-        listaPacotesRecebidos.add(rede.pacotesRecebidos)
     }
 
     // printando os resultados no console
@@ -70,8 +71,14 @@ fun capturarDadosR(looca: Looca ): Redes {
     // nomesRede -> eth15
     // listaBytesEnviados -> pega o número máximo da lista, já que haverá só um por captura
     // listaBytesRecebidos -> pega o número máximo da lista, já que haverá só um por captura
-    return Redes(0, LocalDateTime.now(), nomeRede, listaBytesEnviados.max(), listaBytesRecebidos.max(), listaPacotesEnviados.max(), listaPacotesRecebidos.max())
+    return Redes(0, LocalDateTime.now(), nomeRede, listaBytesEnviados.max(), listaBytesRecebidos.max())
 
+}
+
+fun capturarDadosP(looca: Looca): MutableList<Processo>? {
+    val processos = looca.grupoDeProcessos
+    var listaProcessos = processos.processos
+    return listaProcessos
 }
 
 

@@ -1,5 +1,6 @@
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.britooo.looca.api.group.janelas.Janela
+import com.github.britooo.looca.api.group.processos.Processo
 import org.springframework.jdbc.core.JdbcTemplate
 import java.time.LocalDate
 
@@ -19,6 +20,7 @@ class DadosRepositorios {
         var dataHora = LocalDate.now()
 
         novaJanela?.forEach { janela ->
+            if (janela.titulo != null){
             jdbcTemplate.update(
                 """
             insert into janelas (nomeJanela, dtHora, fkMaquina, fkEmpresa) values
@@ -28,11 +30,10 @@ class DadosRepositorios {
                 dataHora
             )
         }
+        }
     }
 
-
-
-        fun cadastrarRede(novaRede: Redes) {
+    fun cadastrarRede(novaRede: Redes) {
 
         var rowBytesEnviados = jdbcTemplate.update(
             """
@@ -46,38 +47,33 @@ class DadosRepositorios {
         var rowBytesRecebidos = jdbcTemplate.update(
             """
                 insert into monitoramento (dadoColetado, dtHora, descricao, fkComponentesMonitoramentos, fkMaquinaMonitoramentos, fkEmpresaMonitoramentos, fkUnidadeMedida) values
-                (?,?,"bytes rebidos",4,1,1,1)
+                (?,?,"bytes recebidos",4,1,1,1)
             """,
             novaRede.bytesRecebidos,
             novaRede.dataHora
         )
 
-        var rowPacotesEnviados = jdbcTemplate.update(
-                """
-                insert into monitoramento (dadoColetado, dtHora, descricao, fkComponentesMonitoramentos, fkMaquinaMonitoramentos, fkEmpresaMonitoramentos, fkUnidadeMedida) values
-                (?,?,"pacotes enviados",4,1,1,1)
-            """,
-        novaRede.pacotesEnviados,
-        novaRede.dataHora
-        )
-
-        var rowPacotesRecebidos = jdbcTemplate.update(
-                """
-                insert into monitoramento (dadoColetado, dtHora, descricao, fkComponentesMonitoramentos, fkMaquinaMonitoramentos, fkEmpresaMonitoramentos, fkUnidadeMedida) values
-                (?,?,"pacotes recebidos",4,1,1,1)
-            """,
-        novaRede.pacotesRecebidos,
-        novaRede.dataHora
-        )
-
         println("""
-            $rowBytesEnviados de bytes enviados foi registrado no banco
-            $rowBytesRecebidos de bytes recebidos foi registrado no banco
-            $rowPacotesEnviados de pacotes enviados foi registrado no banco
-            $rowPacotesRecebidos de pacotes recebidos foi registrado no banco
+            $rowBytesEnviados query de bytes enviados foi registrado no banco
+            $rowBytesRecebidos query de bytes recebidos foi registrado no banco
         """.trimIndent())
 
     }
-    
 
+    fun cadastrarProcesso(novoProcesso: MutableList<Processo>?){
+        novoProcesso?.forEach { p ->
+            val queryProcesso = jdbcTemplate.update(
+                """
+            insert into processos (PID, nome, usoCPU, usoMemoria, memoriaVirtual, fkMaquina, fkEmpresa) values
+            (?,?,?,?,?,1,1)
+            """,
+                p.pid,
+                p.nome,
+                p.usoCpu,
+                p.usoMemoria,
+                p.memoriaVirtualUtilizada
+            )
+            println("$queryProcesso query inseridas no banco de processos")
+        }
+    }
 }

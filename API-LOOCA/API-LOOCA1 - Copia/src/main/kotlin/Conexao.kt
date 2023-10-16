@@ -24,9 +24,8 @@ object Conexao {
         jdbcTemplate.execute("""
     CREATE TABLE IF NOT EXISTS janelas (
       idJanelas INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-      nomeJanela VARCHAR(45) NULL,
-      data DATE NULL,
-      hora TIME NULL,
+      nomeJanela VARCHAR(250) NULL,
+      dtHora DATETIME NULL,
       fkMaquina INT NOT NULL,
       fkEmpresa INT NOT NULL,
       CONSTRAINT fkJanelasMaquina
@@ -57,6 +56,22 @@ object Conexao {
             REFERENCES unidadeMedida (idUnidade)
             );
     """)
+
+        // Criação da tabela processos
+        jdbcTemplate.execute("""
+            CREATE TABLE IF NOT EXISTS processos (
+              PID INT PRIMARY KEY NOT NULL,
+              nome VARCHAR(150) NULL,
+              usoCPU DOUBLE NULL,
+              usoMemoria DOUBLE NULL,
+              memoriaVirtual DOUBLE NULL,
+              fkMaquina INT NOT NULL,
+              fkEmpresa INT NOT NULL,
+              CONSTRAINT fkProcessosMaquina
+                FOREIGN KEY (fkMaquina , fkEmpresa)
+                REFERENCES maquina (idMaquina , fkEmpresa)
+            )
+        """.trimIndent())
     }
 
 }

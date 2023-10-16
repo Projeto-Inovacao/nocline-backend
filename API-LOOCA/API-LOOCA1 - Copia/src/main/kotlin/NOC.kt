@@ -42,12 +42,13 @@ fun main() {
     val listaBytesEnviados = mutableListOf<Long>()
 
     //Percorre a lista de interfaces de rede e adiciona os bytes recebidos e enviados a cada lista.
-    for (rede in redes) {
+    /*  for (rede in redes) {
         listaBytesRecebidos.add(rede.getBytesRecebidos())
         listaBytesEnviados.add(rede.getBytesEnviados())
     }
 
     // Imprime os bytes recebidos e enviados na saída do console.
+
     println("Bytes recebidos: $listaBytesRecebidos bytes de ${redes}")
     println("Bytes enviados: $listaBytesEnviados bytes de ${redes}")
 
@@ -66,20 +67,19 @@ fun main() {
     // System.out.println(sistema);
 
     // val sistema = looca.sistema
-    // val processos = looca.grupoDeProcessos
 
-//Obtendo lista de discos a partir do getter
-/*
+     */
+    val processos = looca.grupoDeProcessos
+
     var listaProcessos = processos.processos
-    for (n in listaProcessos) {
+    for (p in listaProcessos) {
         println("""
-           nome ${n.nome}
-           pid ${n.pid}
-           uso ${n.usoCpu}
-           memoria ${n.usoMemoria}
-           bytes ${n.bytesUtilizados}
-           memoria virtual ${n.memoriaVirtualUtilizada}
-           
+           nome ${p.nome}
+           pid ${p.pid}
+           uso ${p.usoCpu}
+           memoria ${p.usoMemoria}
+           bytes ${p.bytesUtilizados}
+           memoria virtual ${p.memoriaVirtualUtilizada}
        """.trimIndent())
-    }*/
+    }
 }
