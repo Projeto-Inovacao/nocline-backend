@@ -98,7 +98,7 @@ CREATE TABLE IF NOT EXISTS chat (
     FOREIGN KEY (fkComentario)
     REFERENCES chat (idChat)
     );
-    
+    select * from Nocline;
 CREATE TABLE IF NOT EXISTS maquina (
   idMaquina INT NOT NULL AUTO_INCREMENT,
   ip VARCHAR(20) NULL,
@@ -114,11 +114,12 @@ CREATE TABLE IF NOT EXISTS maquina (
     REFERENCES empresa (idEmpresa)
     );
     
+    select * from empresa;
+    
 CREATE TABLE IF NOT EXISTS janelas (
   idJanelas INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
   nomeJanela VARCHAR(45) NULL,
-  data DATE NULL,
-  hora TIME NULL,
+  dtHora DATETIME NOT NULL,
   fkMaquina INT NOT NULL,
   fkEmpresa INT NOT NULL,
   CONSTRAINT fkJanelasMaquina
@@ -184,7 +185,7 @@ CREATE TABLE IF NOT EXISTS aviso (
     REFERENCES monitoramento (idMonitoramento)
     
     );
-    
+    select * from janelas;
 CREATE TABLE IF NOT EXISTS controleAcesso (
   fkColaborador INT NOT NULL,
   fkEmpresaColaborador INT NOT NULL,
@@ -202,4 +203,3 @@ CREATE TABLE IF NOT EXISTS controleAcesso (
     FOREIGN KEY (fkMaquina , fkEmpresaMáquina)
     REFERENCES maquina (idMaquina , fkEmpresa)
     );
-

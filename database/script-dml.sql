@@ -27,19 +27,11 @@ INSERT INTO nivelAcesso VALUES
 SELECT * FROM nivelAcesso;
 
 -- Inserir dados na tabela colaborador
--- INSERT INTO colaborador VALUES (null, 'Nome Colaborador Exemplo', '12345678901', 'nome.colaborador@email.com', '12345678901', sha2('senha123', 256), 1, 1);
+-- INSERT INTO colaborador VALUES (null, 'Nome Colaborador Exemplo', '34123', 'n@email.com', '12345678901', sha2('senha321', 256), 1, 1);
 SELECT * FROM colaborador;
-select * from planos;
-select * from colaborador;
-SELECT * from empresa;
-
-
-
-select * from endereco;
-
-
 
 -- Inserir dados na tabela planos
+
 INSERT INTO planos 
 VALUES
  (null, 1, 0, 0),
@@ -55,7 +47,8 @@ use nocline;
 SELECT * FROM cartao;
 
 -- Inserir dados na tabela maquina
--- INSERT INTO maquina VALUES (null, '177.181.7.16', 'Windows', 'gyulia_piqueira', 'Modelo Exemplo', 'CCO', 1);
+INSERT INTO maquina 
+VALUES (null, '177.181.7.16', 'Windows', 'Modelo Exemplo', 'CCO', 1);
 SELECT * FROM maquina;
 
 -- Inserir dados na tabela componente
@@ -71,26 +64,3 @@ SELECT CONCAT(dadoColetado, ' ', Representacao) AS DadoCompleto, dtHora, nomeCom
 FROM Monitoramento
 JOIN UnidadeMedida ON fkUnidadeMedida = idUnidade
 JOIN Componente ON fkComponentesMonitoramentos = idComponente;
-
-
-SELECT
-   *
-FROM empresa
-LEFT JOIN colaborador ON empresa.idEmpresa = colaborador.fkEmpresa
-LEFT JOIN endereco ON empresa.idEmpresa = endereco.fkEmpresaE
-LEFT JOIN cartao ON empresa.idEmpresa = cartao.fkEmpresaC;
-
-INSERT INTO cartao (nCartao, validade, cvv, bandeira, nomeTitular, fkEmpresaC) VALUES ( '1234567890123455', '1204', '123', 'visa', 'marcos', (select idEmpresa from empresa WHERE CNPJ = '98981234002233'));
-
-delete 
-
-
-
-
-
-
-  select 
-    email, senha from colaborador 
-     join empresa on fkEmpresa = idEmpresa
-    WHERE (email = 99 AND senha = 99) ;
-
