@@ -54,11 +54,11 @@ while not event.is_set():
 
                     sql_query = """
                 INSERT INTO Monitoramento (dadoColetado, dtHora, descricao, fkComponentesMonitoramentos, fkMaquinaMonitoramentos, fkEmpresaMonitoramentos, fkUnidadeMedida)
-                VALUES (%s, now(), 'uso cpu', 1, %s, %s, (SELECT idUnidade FROM unidadeMedida WHERE representacao = '%')),
-                       (%s, now(), 'disco livre', 2, %s, %s, (SELECT idUnidade FROM unidadeMedida WHERE representacao = 'B')),
-                       (%s, now(), 'disco total', 2, %s, %s, (SELECT idUnidade FROM unidadeMedida WHERE representacao = 'B')),
-                       (%s, now(), 'memoria disponivel', 3, %s, %s, (SELECT idUnidade FROM unidadeMedida WHERE representacao = 'B')),
-                       (%s, now(), 'memoria total', 3, %s, %s, (SELECT idUnidade FROM unidadeMedida WHERE representacao = 'B'));
+                VALUES (%s, now(), 'uso cpu', 9, %s, %s, (SELECT idUnidade FROM unidadeMedida WHERE representacao = '%')),
+                       (%s, now(), 'disco livre', 10, %s, %s, (SELECT idUnidade FROM unidadeMedida WHERE representacao = 'B')),
+                       (%s, now(), 'disco total', 10, %s, %s, (SELECT idUnidade FROM unidadeMedida WHERE representacao = 'B')),
+                       (%s, now(), 'memoria disponivel', 11, %s, %s, (SELECT idUnidade FROM unidadeMedida WHERE representacao = 'B')),
+                       (%s, now(), 'memoria total', 11, %s, %s, (SELECT idUnidade FROM unidadeMedida WHERE representacao = 'B'));
             """
                     val = [cpu_percentual, fkMaquinaMonitoramentos, fkEmpresaMonitoramentos, disco_livre, fkMaquinaMonitoramentos, fkEmpresaMonitoramentos, disco_total, fkMaquinaMonitoramentos, fkEmpresaMonitoramentos, memoria_disponivel, fkMaquinaMonitoramentos, fkEmpresaMonitoramentos, memoria_total, fkMaquinaMonitoramentos, fkEmpresaMonitoramentos]
                     mycursor.execute(sql_query, val)
@@ -74,4 +74,4 @@ while not event.is_set():
             if(mydb.is_connected()): #verifica se a conexão com o banco de dados está aberta
                 mycursor.close() #aqui fecha uma parte
                 mydb.close() #aqui fecha outra, só vai cair aqui dentro se clicar esq, ai chama a função de fechar o loop, caso contrario continua dando insert
-                time.sleep(5)
+                time.sleep(3600)

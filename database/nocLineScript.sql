@@ -126,6 +126,18 @@ CREATE TABLE IF NOT EXISTS janelas (
     REFERENCES maquina (idMaquina , fkEmpresa)
 );
 
+CREATE TABLE IF NOT EXISTS rede (
+  idJanelas INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  nomeJanela VARCHAR(45) NULL,
+  data DATE NULL,
+  hora TIME NULL,
+  fkMaquina INT NOT NULL,
+  fkEmpresa INT NOT NULL,
+  CONSTRAINT fkJanelasMaquina
+    FOREIGN KEY (fkMaquina , fkEmpresa)
+    REFERENCES maquina (idMaquina , fkEmpresa)
+);
+
 CREATE TABLE IF NOT EXISTS processos (
   PID INT PRIMARY KEY NOT NULL,
   usoCPU DOUBLE NULL,
