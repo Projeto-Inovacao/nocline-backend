@@ -5,9 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5c0de483-96f6-43d4-90ff-4b23206d0d9e" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/NOC.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/NOC.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/NOCKt.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/NOCKt.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../database/modelagem.mwb" beforeDir="false" afterPath="$PROJECT_DIR$/../../database/modelagem.mwb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../database/modelagem.mwb.bak" beforeDir="false" afterPath="$PROJECT_DIR$/../../database/modelagem.mwb.bak" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../database/script-dml.sql" beforeDir="false" afterPath="$PROJECT_DIR$/../../database/script-dml.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../python/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../python/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../teste.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../teste.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,10 +19,10 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 2
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 2
+}</component>
   <component name="ProjectId" id="2W4gSHkdOWs9DBeHeI3oEzso7Pt" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -31,6 +33,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "main",
+    "last_opened_file_path": "C:/Users/gyuli/Documents/API-LOOCA1",
     "settings.editor.selected.configurable": "preferences.lookFeel"
   }
 }]]></component>

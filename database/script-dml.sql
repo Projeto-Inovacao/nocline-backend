@@ -1,5 +1,5 @@
 /* INSERTS OBRIGATÓRIOS PARA O FUNCIONAMENTO DO PROGRAMA ! */
-
+use nocLine;
 
 -- tabela UnidadeDeMedida
 INSERT INTO unidadeMedida
@@ -7,7 +7,6 @@ VALUES
 (null, 'Bytes', 'B'),
 (null, 'Porcemtagem', '%');
 SELECT * FROM unidadeMedida;
-
 
 /* DADOS SIMULADOS PORÉM IMPORTANTES NA EXECUÇÃO DA API JÁ QUE ELA PRECISA DE UMA EMPRESA EXISTENTE*/
 -- Inserir dados na tabela empresa
@@ -47,16 +46,15 @@ use nocline;
 SELECT * FROM cartao;
 
 -- Inserir dados na tabela maquina
-INSERT INTO maquina 
-VALUES (null, '177.181.7.16', 'Windows', 'Modelo Exemplo', 'CCO', 1);
+INSERT INTO maquina VALUES (null, '177.181.7.16', 'Windows', 'gyulia_piqueira', 'Modelo Exemplo', 'CCO', 2);
 SELECT * FROM maquina;
 
 -- Inserir dados na tabela componente
 INSERT INTO componente VALUES
-(null, 'CPU', 1, 1),
-(null, 'DISCO', 1, 1),
-(null, 'RAM', 1, 1),
-(null, 'REDE', 1, 1);
+(null, 'CPU', 2, 2),
+(null, 'DISCO', 2, 2),
+(null, 'RAM', 2, 2),
+(null, 'REDE', 2, 2);
 SELECT * FROM componente;
 
 
@@ -64,3 +62,26 @@ SELECT CONCAT(dadoColetado, ' ', Representacao) AS DadoCompleto, dtHora, nomeCom
 FROM Monitoramento
 JOIN UnidadeMedida ON fkUnidadeMedida = idUnidade
 JOIN Componente ON fkComponentesMonitoramentos = idComponente;
+
+
+SELECT
+   *
+FROM empresa
+LEFT JOIN colaborador ON empresa.idEmpresa = colaborador.fkEmpresa
+LEFT JOIN endereco ON empresa.idEmpresa = endereco.fkEmpresaE
+LEFT JOIN cartao ON empresa.idEmpresa = cartao.fkEmpresaC;
+
+INSERT INTO cartao (nCartao, validade, cvv, bandeira, nomeTitular, fkEmpresaC) VALUES ( '1234567890123455', '1204', '123', 'visa', 'marcos', (select idEmpresa from empresa WHERE CNPJ = '98981234002233'));
+
+delete 
+
+
+
+
+
+
+  select 
+    email, senha from colaborador 
+     join empresa on fkEmpresa = idEmpresa
+    WHERE (email = 99 AND senha = 99) ;
+

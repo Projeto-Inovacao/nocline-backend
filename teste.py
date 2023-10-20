@@ -12,4 +12,4 @@ def desligar_em(hora, minutos):
     os.system("shutdown /s /t 1")
 
 # Exemplo: desligar às 22:30
-desligar_em(9, 2)
+desligar_em(11, 3)
