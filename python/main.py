@@ -6,53 +6,52 @@ import socket
 import mysql.connector
 from cred import usr, pswd
 
-cpu = psutil.cpu_times()
-processador = psutil.cpu_percent(interval=1)
-memoria = psutil.virtual_memory()
-disco = psutil.disk_usage("/")
-hostname = socket.gethostname()
 event = threading.Event()
-
 print(event)
 
-def stop(): #define o evento para parar o monitoramento (tecla esc)
-    event.set() #para o evento
+def stop(): # Define o evento para parar o monitoramento (tecla esc)
+    event.set() # Para o evento
     print("\nFinalizando monitoramento")
     print(event)
 
 keyboard.add_hotkey("esc", stop)
 
-
 while not event.is_set():
-#CPU
-        cpu_percentual = processador
+    cpu = psutil.cpu_times()
+    processador = psutil.cpu_percent(interval=1)
+    memoria = psutil.virtual_memory()
+    disco = psutil.disk_usage("/")
+    hostname = socket.gethostname()
 
-#COMPONENTE DISCO
-        disco_livre = disco.free
-        disco_total = disco.total
+    # CPU
+    cpu_percentual = processador
 
-#MEMORIA
-        memoria_disponivel = memoria.available
-        memoria_total = memoria.total
+    # Componente Disco
+    disco_livre = disco.free
+    disco_total = disco.total
 
-        mydb = mysql.connector.connect(host = 'localhost',user = usr, password = pswd, database = 'nocLine')
-        try:
-            if mydb.is_connected():
-                db_info = mydb.get_server_info() #obtem informações do servidor mysql
+    # Memória
+    memoria_disponivel = memoria.available
+    memoria_total = memoria.total
+
+    mydb = mysql.connector.connect(host='localhost', user=usr, password=pswd, database='nocLine')
+    try:
+        if mydb.is_connected():
+            db_info = mydb.get_server_info()  # Obtém informações do servidor MySQL
                 
-                mycursor = mydb.cursor() #ladainha do sql
+            mycursor = mydb.cursor()  # Ladainha do SQL
         
-                sql_query = "SELECT idMaquina, fkEmpresa FROM maquina WHERE hostname = %s;"
+            sql_query = "SELECT idMaquina, fkEmpresa FROM maquina WHERE hostname = %s;"
         
-                mycursor.execute(sql_query, (hostname,))
+            mycursor.execute(sql_query, (hostname,))
 
-                # Obtém o resultado da consulta
-                result = mycursor.fetchone()  # Você pode usar fetchall() se houver múltiplas linhas de resultado
+            # Obtém o resultado da consulta
+            result = mycursor.fetchone()  # Você pode usar fetchall() se houver múltiplas linhas de resultado
 
-                if result:
-                    fkMaquinaMonitoramentos, fkEmpresaMonitoramentos = result  # Desempacota os valores
+            if result:
+                fkMaquinaMonitoramentos, fkEmpresaMonitoramentos = result  # Desempacota os valores
 
-                    sql_query = """
+                sql_query = """
                 INSERT INTO Monitoramento (dadoColetado, dtHora, descricao, fkComponentesMonitoramentos, fkMaquinaMonitoramentos, fkEmpresaMonitoramentos, fkUnidadeMedida)
                 VALUES (%s, now(), 'uso cpu', 9, %s, %s, (SELECT idUnidade FROM unidadeMedida WHERE representacao = '%')),
                        (%s, now(), 'disco livre', 10, %s, %s, (SELECT idUnidade FROM unidadeMedida WHERE representacao = 'B')),
@@ -74,4 +73,4 @@ while not event.is_set():
             if(mydb.is_connected()): #verifica se a conexão com o banco de dados está aberta
                 mycursor.close() #aqui fecha uma parte
                 mydb.close() #aqui fecha outra, só vai cair aqui dentro se clicar esq, ai chama a função de fechar o loop, caso contrario continua dando insert
-                time.sleep(3600)
+                time.sleep(5)
