@@ -41,7 +41,7 @@ while not event.is_set():
                 
             mycursor = mydb.cursor()  # Ladainha do SQL
         
-            sql_query = "SELECT idMaquina, fkEmpresa FROM maquina WHERE hostname = %s;"
+            sql_query = "SELECT id_maquina, fk_empresaM FROM maquina WHERE hostname = %s;"
         
             mycursor.execute(sql_query, (hostname,))
 
@@ -49,28 +49,28 @@ while not event.is_set():
             result = mycursor.fetchone()  # Você pode usar fetchall() se houver múltiplas linhas de resultado
 
             if result:
-                fkMaquinaMonitoramentos, fkEmpresaMonitoramentos = result  # Desempacota os valores
+                id_maquina, fk_empresaM = result  # Desempacota os valores
 
                 sql_query = """
-                INSERT INTO Monitoramento (dadoColetado, dtHora, descricao, fkComponentesMonitoramentos, fkMaquinaMonitoramentos, fkEmpresaMonitoramentos, fkUnidadeMedida)
-                VALUES (%s, now(), 'uso cpu', 9, %s, %s, (SELECT idUnidade FROM unidadeMedida WHERE representacao = '%')),
-                       (%s, now(), 'disco livre', 10, %s, %s, (SELECT idUnidade FROM unidadeMedida WHERE representacao = 'B')),
-                       (%s, now(), 'disco total', 10, %s, %s, (SELECT idUnidade FROM unidadeMedida WHERE representacao = 'B')),
-                       (%s, now(), 'memoria disponivel', 11, %s, %s, (SELECT idUnidade FROM unidadeMedida WHERE representacao = 'B')),
-                       (%s, now(), 'memoria total', 11, %s, %s, (SELECT idUnidade FROM unidadeMedida WHERE representacao = 'B'));
-            """
-                    val = [cpu_percentual, fkMaquinaMonitoramentos, fkEmpresaMonitoramentos, disco_livre, fkMaquinaMonitoramentos, fkEmpresaMonitoramentos, disco_total, fkMaquinaMonitoramentos, fkEmpresaMonitoramentos, memoria_disponivel, fkMaquinaMonitoramentos, fkEmpresaMonitoramentos, memoria_total, fkMaquinaMonitoramentos, fkEmpresaMonitoramentos]
-                    mycursor.execute(sql_query, val)
-                    mydb.commit() #se tiver tudo ok, aqui ele da o insert no banco
-                    print(mycursor.rowcount, "registros inseridos no banco") #esse rowcount fala o número de registros inseridos de uma vez
-                    print("\r\n")
-                else:
-                    print("A maquina " + hostname + " não foi cadastrada no site, cadastre ela para que seja feita captura!")
+                INSERT INTO Monitoramento (dado_coletado, data_hora, descricao, fk_componentes_monitoramento, fk_maquina_monitoramento, fk_empresa_monitoramento, fk_unidade_medida)
+                VALUES (%s, now(), 'uso cpu', 1, %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = '%')),
+                       (%s, now(), 'disco livre', 2, %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = 'B')),
+                       (%s, now(), 'disco total', 2, %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = 'B')),
+                       (%s, now(), 'memoria disponivel', 3, %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = 'B')),
+                       (%s, now(), 'memoria total', 3, %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = 'B'));
+                """
+                val = [cpu_percentual, id_maquina, fk_empresaM, disco_livre, id_maquina, fk_empresaM, disco_total, id_maquina, fk_empresaM, memoria_disponivel, id_maquina, fk_empresaM, memoria_total, id_maquina, fk_empresaM]
+                mycursor.execute(sql_query, val)
+                mydb.commit()  # Se tudo estiver OK, aqui ele dá o INSERT no banco
+                print(mycursor.rowcount, "registros inseridos no banco")  # Este rowcount fala o número de registros inseridos de uma vez
+                print("\r\n")
+            else:
+                print("A máquina " + hostname + " não foi cadastrada no site, cadastre-a para que seja feita a captura!")
 
-        except mysql.connector.Error as e: #aqui é se der ruim com o banco, cai nesse erro
-            print("Erro ao conectar com o MySQL", e)
-        finally:
-            if(mydb.is_connected()): #verifica se a conexão com o banco de dados está aberta
-                mycursor.close() #aqui fecha uma parte
-                mydb.close() #aqui fecha outra, só vai cair aqui dentro se clicar esq, ai chama a função de fechar o loop, caso contrario continua dando insert
-                time.sleep(5)
+    except mysql.connector.Error as e:  # Aqui é se der ruim com o banco, cai nesse erro
+        print("Erro ao conectar com o MySQL", e)
+    finally:
+        if mydb.is_connected():  # Verifica se a conexão com o banco de dados está aberta
+            mycursor.close()  # Aqui fecha uma parte
+            mydb.close()  # Aqui fecha outra, só vai cair aqui dentro se clicar esc, ai chama a função de fechar o loop, caso contrário continua dando INSERT
+            time.sleep(5)
