@@ -1,22 +1,6 @@
 use nocline;
-
-CREATE VIEW VW_DISCO_CHART AS  
-SELECT
-  ROUND((M1.dado_coletado / M2.dado_coletado) * 100, 2) AS "livre",
-  ROUND(((M2.dado_coletado - M1.dado_coletado) / M2.dado_coletado) * 100, 2) AS "usado",
-  M1.data_hora,
-  componente.nome_componente, id_maquina, hostname, razao_social
-FROM
-  monitoramento AS M1
-  JOIN monitoramento AS M2 ON M1.fk_maquina_monitoramento = M2.fk_maquina_monitoramento
-  JOIN unidade_medida ON M1.fk_unidade_medida = id_unidade
-  JOIN componente ON M1.fk_componentes_monitoramento = componente.id_componente
-  JOIN maquina as M on M1.fk_maquina_monitoramento = M.id_maquina
-  JOIN empresa on M.fk_empresaM = empresa.id_empresa
-WHERE
-  M1.descricao = "disco livre"
-  AND M2.descricao = "disco total";
  
+-- view CPU
 CREATE VIEW VW_CPU_CHART AS
 SELECT dado_coletado, Representacao, DATE_FORMAT(data_hora, "%H:%i:%s") as data_hora, nome_componente, descricao, id_maquina, hostname, razao_social
 FROM monitoramento
@@ -25,17 +9,20 @@ JOIN componente ON fk_componentes_monitoramento = id_componente
 JOIN maquina as M on fk_maquina_monitoramento = M.id_maquina
 JOIN empresa on M.fk_empresaM = empresa.id_empresa WHERE nome_componente = 'CPU';
 
+select * from VW_CPU_CHART;
+
+-- view RAM
 CREATE VIEW VW_RAM_CHART AS
 SELECT
+    DISTINCT DATE_FORMAT(M1.data_hora, "%H:%i:%s") AS data_hora,
     ROUND(((1 - M1.dado_coletado / M2.dado_coletado) * 100), 2) AS "usado",
     ROUND((M1.dado_coletado / M2.dado_coletado) * 100, 2) AS "livre",
     M2.dado_coletado AS "total",
-    DATE_FORMAT(M1.data_hora, "%H:%i:%s") AS data_hora,
     componente.nome_componente,
     M.id_maquina,
     M.hostname,
     empresa.razao_social
-FROM monitoramento AS M1	
+FROM monitoramento AS M1
 JOIN monitoramento AS M2 ON M1.fk_maquina_monitoramento = M2.fk_maquina_monitoramento
 JOIN componente ON M1.fk_componentes_monitoramento = componente.id_componente
 JOIN maquina AS M ON M1.fk_maquina_monitoramento = M.id_maquina
@@ -44,12 +31,37 @@ WHERE componente.nome_componente = 'RAM'
   AND M2.descricao = 'memoria total'
   AND M1.descricao = 'memoria disponivel';
 
+select * from VW_RAM_CHART;
 
+-- view DISCO
+CREATE VIEW VW_DISCO_CHART AS  
+SELECT
+  DISTINCT M1.data_hora,
+  ROUND((M1.dado_coletado / M2.dado_coletado) * 100, 2) AS "livre",
+  ROUND(((M2.dado_coletado - M1.dado_coletado) / M2.dado_coletado) * 100, 2) AS "usado",
+  componente.nome_componente,
+  id_maquina,
+  hostname,
+  razao_social
+FROM
+  monitoramento AS M1
+  JOIN monitoramento AS M2 ON M1.fk_maquina_monitoramento = M2.fk_maquina_monitoramento
+  JOIN unidade_medida ON M1.fk_unidade_medida = id_unidade
+  JOIN componente ON M1.fk_componentes_monitoramento = componente.id_componente
+  JOIN maquina AS M ON M1.fk_maquina_monitoramento = M.id_maquina
+  JOIN empresa ON M.fk_empresaM = empresa.id_empresa
+WHERE
+  M1.descricao = "disco livre"
+  AND M2.descricao = "disco total";
+
+select * from VW_DISCO_CHART;
+
+-- view REDE
 CREATE VIEW VW_REDE_CHART AS
 SELECT
-    CASE WHEN descricao = 'bytes enviados' THEN dado_coletado END AS enviados,
-    CASE WHEN descricao = 'bytes recebidos' THEN dado_coletado END AS recebidos,
     DATE_FORMAT(data_hora, "%H:%i:%s") as data_hora,
+    MAX(CASE WHEN descricao = 'bytes enviados' THEN dado_coletado END) AS enviados,
+    MAX(CASE WHEN descricao = 'bytes recebidos' THEN dado_coletado END) AS recebidos,
     Representacao,
     nome_componente,
     id_maquina,
@@ -60,8 +72,12 @@ JOIN unidade_medida ON fk_unidade_medida = id_unidade
 JOIN componente ON fk_componentes_monitoramento = id_componente
 JOIN maquina as M on fk_maquina_monitoramento = M.id_maquina
 JOIN empresa ON M.fk_empresaM = empresa.id_empresa
-WHERE nome_componente = 'REDE';
+WHERE nome_componente = 'REDE'
+GROUP BY data_hora, Representacao, nome_componente, id_maquina, hostname, razao_social;
 
+select * from VW_REDE_CHART;
+
+-- view gráfico de barra dash
 CREATE VIEW VW_DESEMPENHO_CHART AS
 SELECT
     data_hora AS data_hora,
@@ -108,13 +124,14 @@ FROM (
 ) AS D
 WHERE D.rn = 1;
 
-select * from VW_DISCO_CHART;
+-- view janelas
+create view VW_JANELAS_CHART as select nome_janela, status_abertura, fk_maquinaJ, fk_empresaJ from janela;
+
+select * from VW_JANELAS_CHART;
+
+
+-- selects views:
 select * from VW_CPU_CHART;
 select * from VW_RAM_CHART;
+select * from VW_DISCO_CHART;
 select * from VW_REDE_CHART;
-select * from VW_DESEMPENHO_CHART;
-select * from janela;
-
-
-
-
