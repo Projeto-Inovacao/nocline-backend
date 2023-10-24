@@ -108,12 +108,14 @@ FROM (
 ) AS D
 WHERE D.rn = 1;
 
+create view VW_JANELAS_CHART as select nome_janela, status_abertura, fk_maquinaJ, fk_empresaJ from janela;
+
 select * from VW_DISCO_CHART;
 select * from VW_CPU_CHART;
 select * from VW_RAM_CHART;
 select * from VW_REDE_CHART;
 select * from VW_DESEMPENHO_CHART;
-select * from janela;
+select * from VW_JANELAS_CHART;
 
 
 
