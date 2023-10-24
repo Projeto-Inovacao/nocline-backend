@@ -1,0 +1,35 @@
+#! /bin/bash
+
+echo "[Assistente NocLine]: Olá, muito prazer! Eu sou a assitente virtual da NocLine e vou te guiar para que você consiga ter acesso aos dados de máquina da sua EC2 por uma interface gráfica."
+sleep 5
+
+echo "[Assistente NocLine]: Para iniciar a visualização dos dados de máquina por meio da interface gráfica, o primeiro passo é atualizar o sistema e todos os pacotes instalados."
+sleep 5
+sudo apt update && sudo apt upgrade -y
+sleep 2
+echo "[Assistente NocLine]: Pacotes atualizados com sucesso!"
+sleep 5
+
+echo "[Assistente NocLine]: Agora instalaremos uma interface de usuário chamada LXDE, a qual configura um servidor para permitir que você faça login remotamente no seu computador usando a Área de Trabalho Remota."
+sleep 5
+sudo apt-get install xrdp lxde-core lxde tigervnc-standalone-server -y
+sleep 2
+echo "[Assistente NocLine]: Interface gráfica instalada com sucesso!"
+sleep 5
+
+echo "[Assistente NocLine]: No fim dessa primeira etapa, instalaremos a ferramenta >nmon< para que ela te ofereça informações detalhadas sobre o desempenho dos componentes da sua máquina."
+sleep 5
+sudo apt-get install nmon
+sleep 2
+echo "[Assistente NocLine]: Ferramenta NMON instalada com sucesso!"
+sleep 5
+
+echo "[Assistente NocLine]: Bom trabalho! Primeira parte concluída! Agora, você copiará o código >Endereço IPv4 público< contido da página de instâncias da AWS, digitará >RDP< na barra de pesquisar do seu computador e colará o código copiado." 
+sleep 5
+
+echo "[Assistente NocLine]: Depois você digitará seu usuário e sua senha, abrirá o >terminal< de comando dentro do >Área de Trabalho Remota< e digitará o seguinte comando >bash parte2NL.sh<"
+sleep 5
+
+echo "[Assistente Nocline]: Nos vemos novamente na segunda parte da execução! Até já! :D"
+
+
