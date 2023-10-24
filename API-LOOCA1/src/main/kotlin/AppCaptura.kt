@@ -25,7 +25,7 @@ fun main() {
         val novaRede = capturarDadosR(looca)
         repositorio.cadastrarRede(novaRede)
 
-        TimeUnit.SECONDS.sleep(5)
+        TimeUnit.SECONDS.sleep(60)
     }
 }
 

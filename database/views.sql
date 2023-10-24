@@ -113,3 +113,8 @@ select * from VW_CPU_CHART;
 select * from VW_RAM_CHART;
 select * from VW_REDE_CHART;
 select * from VW_DESEMPENHO_CHART;
+select * from janela;
+
+
+
+
