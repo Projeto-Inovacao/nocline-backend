@@ -124,13 +124,8 @@ FROM (
 ) AS D
 WHERE D.rn = 1;
 
-create view VW_JANELAS_CHART as select nome_janela, status_abertura, fk_maquinaJ, fk_empresaJ from janela;
-
 -- view janelas
 create view VW_JANELAS_CHART as select nome_janela, status_abertura, fk_maquinaJ, fk_empresaJ from janela;
-
-select * from VW_JANELAS_CHART;
-
 
 -- selects views:
 select * from VW_CPU_CHART;
