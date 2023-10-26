@@ -13,8 +13,8 @@ fun main() {
     val login = Usuario()
     val dadoslogin = LoginRepositorio()
 
-    login.email = JOptionPane.showInputDialog("Digite o seu email!").toString()
-    login.senha = JOptionPane.showInputDialog("Digite a sua senha!").toString()
+    login.email = JOptionPane.showInputDialog("Digite o seu email:").toString()
+    login.senha = JOptionPane.showInputDialog("Digite a sua senha:").toString()
 
     dadoslogin.iniciar()
         if(dadoslogin.validarLogin(login)) {
@@ -22,12 +22,12 @@ fun main() {
 
             var fk_empresa = dadoslogin.verificarEmpresa(login)
             var listaDeMaquinas = dadoslogin.mostrarMaquina(fk_empresa)
-            var id_maquina = JOptionPane.showInputDialog("Digite o id da maquina que você deseja monitorar \n \r $listaDeMaquinas").toInt()
+            var id_maquina = JOptionPane.showInputDialog("Digite o ID da máquina que você deseja monitorar:\n\r $listaDeMaquinas").toInt()
 
             val repositorio = DadosRepositorios()
             repositorio.iniciar()
 
-            JOptionPane.showConfirmDialog(null,"O monitoramento irá inicalizar agora")
+            JOptionPane.showConfirmDialog(null,"O monitoramento irá inicializar agora!")
             while (true) {
                 //CAPTURA DE PROCESSOS
                 val novoProcesso = capturarDadosP(looca)
@@ -45,7 +45,7 @@ fun main() {
             }
         }else{
             JOptionPane.showMessageDialog(null, """
-                Não conseguimos validar seu login dentro da nossa plataforma, caso você ache que isso é um erro, por favor, entre em contato conosco
+                Não conseguimos validar seu login dentro da nossa plataforma, caso você ache que isso é um erro, por favor, entre em contato conosco!
                 """.trimIndent())
         }
 }
