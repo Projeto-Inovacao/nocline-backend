@@ -8,22 +8,17 @@ import org.springframework.jdbc.core.queryForObject
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-// classe responsável por interagir com o banco de dados para dados relacionados a janelas e redes
 class DadosRepositorios {
 
-    // objeto JdbcTemplate usado para interagir com o banco de dados
     lateinit var jdbcTemplate: JdbcTemplate
 
-    // método para iniciar o repositório, geralmente chamado no início para configurar a conexão com o banco de dados
     fun iniciar() {
         jdbcTemplate = Conexao.jdbcTemplate!!
     }
 
-
-    // método para cadastrar informações sobre uma janela no banco de dados
-    fun cadastrarJanela(novaJanela: MutableList<Janela>?, id_maquina: Int) {
+    fun cadastrarJanela(novaJanela: MutableList<Janela>?, id_maquina: Int, fk_empresa: Int) {
         val janelasNoBanco = jdbcTemplate.queryForList(
-            "SELECT nome_janela FROM janela where fk_maquinaJ = $id_maquina",
+            "SELECT nome_janela FROM janela where fk_maquinaJ = $id_maquina and fk_empresaJ = $fk_empresa",
             String::class.java
         )
 
@@ -40,7 +35,7 @@ class DadosRepositorios {
                 UPDATE janela
                 SET data_hora = ?,
                     status_abertura = ?,
-                WHERE nome_janela = ? AND fk_janelaM = $id_maquina
+                WHERE nome_janela = ? AND fk_janelaM = $id_maquina AND fk_empresa = $fk_empresa
                 """,
                         LocalDateTime.now(),
                         true,
@@ -51,7 +46,7 @@ class DadosRepositorios {
                     jdbcTemplate.update(
                         """
                 INSERT INTO janela (nome_janela, data_hora, status_abertura, fk_maquinaJ, fk_empresaJ)
-                VALUES (?, ?, ?, $id_maquina, (select fk_empresaM from maquina where id_maquina = $id_maquina))
+                VALUES (?, ?, ?, $id_maquina, $fk_empresa)
                 """,
                         janela.titulo,
                         LocalDateTime.now(),
@@ -71,9 +66,9 @@ class DadosRepositorios {
 
     }
 
-    fun validarJanela(nome_janela: String, id_maquina: Int): Boolean {
+    fun validarJanela(nome_janela: String, id_maquina: Int, fk_empresa: Int): Boolean {
         val queryValidacao = jdbcTemplate.queryForObject(
-            "SELECT count(*) FROM janela WHERE nome_janela = ? and fk_maquinaJ = $id_maquina",
+            "SELECT count(*) FROM janela WHERE nome_janela = ? and fk_maquinaJ = $id_maquina and fk_empresJ = $fk_empresa",
             Int::class.java,
             nome_janela
         )
@@ -81,12 +76,12 @@ class DadosRepositorios {
     }
 
 
-    fun cadastrarRede(novaRede: Redes, id_maquina: Int) {
+    fun cadastrarRede(novaRede: Redes, id_maquina: Int, fk_empresa: Int) {
 
         var rowBytesEnviados = jdbcTemplate.update(
             """
                 insert into monitoramento (dado_coletado, data_hora, descricao, fk_componentes_monitoramento, fk_maquina_monitoramento, fk_empresa_monitoramento, fk_unidade_medida) values
-                (?,?,"bytes enviados",4,$id_maquina,(select fk_empresaM from maquina where id_maquina = $id_maquina),1)
+                (?,?,"bytes enviados",4,$id_maquina,$fk_empresa,1)
             """,
             novaRede.bytesEnviados,
             novaRede.dataHora
@@ -95,7 +90,7 @@ class DadosRepositorios {
         var rowBytesRecebidos = jdbcTemplate.update(
             """
                 insert into monitoramento (dado_coletado, data_hora, descricao, fk_componentes_monitoramento, fk_maquina_monitoramento, fk_empresa_monitoramento, fk_unidade_medida) values
-                (?,?,"bytes recebidos",4,$id_maquina,(select fk_empresaM from maquina where id_maquina = $id_maquina),1)
+                (?,?,"bytes recebidos",4,$id_maquina,$fk_empresa,1)
             """,
             novaRede.bytesRecebidos,
             novaRede.dataHora
@@ -110,9 +105,9 @@ class DadosRepositorios {
 
     }
 
-    fun cadastrarProcesso(novoProcesso: MutableList<Processo>?, id_maquina: Int) {
+    fun cadastrarProcesso(novoProcesso: MutableList<Processo>?, id_maquina: Int, fk_empresa: Int) {
         val processosNoBanco = jdbcTemplate.queryForList(
-            "SELECT pid FROM processos where fk_maquinaP = $id_maquina",
+            "SELECT pid FROM processos where fk_maquinaP = $id_maquina and fk_empresaP = $fk_empresa",
             Int::class.java
         )
 
@@ -120,7 +115,7 @@ class DadosRepositorios {
 
         novoProcesso?.forEach { p ->
             if (p.pid != null && (pidsListados == null || pidsListados.contains(p.pid))) {
-                val validacao = validarProcesso(p.pid, id_maquina)
+                val validacao = validarProcesso(p.pid, id_maquina, fk_empresa)
 
                 if (validacao) {
                     val pid = p.pid
@@ -134,7 +129,7 @@ class DadosRepositorios {
                             uso_memoria = ?,
                             memoria_virtual = ?,
                             status_abertura = ?
-                        WHERE PID = ? and fk_maquinaP = $id_maquina
+                        WHERE PID = ? and fk_maquinaP = $id_maquina and fk_empresaP = $fk_empresa
                         """,
                             p.usoCpu,
                             p.usoMemoria,
@@ -148,14 +143,15 @@ class DadosRepositorios {
                     val queryProcesso = jdbcTemplate.update(
                         """
                     INSERT INTO processos (PID, uso_cpu, uso_memoria, memoria_virtual, status_abertura, fk_maquinaP, fk_empresaP)
-                    VALUES (?, ?, ?, ?, ?, ?, (select fk_empresaM from maquina where id_maquina = $id_maquina))
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
                     """,
                         p.pid,
                         p.usoCpu,
                         p.usoMemoria,
                         p.memoriaVirtualUtilizada,
                         true,
-                        id_maquina
+                        id_maquina,
+                        fk_empresa
                     )
                     println("$queryProcesso registro inserido na tabela de processos")
                 }
@@ -170,9 +166,9 @@ class DadosRepositorios {
         }
     }
 
-    fun validarProcesso(pid: Int, id_maquina: Int): Boolean {
+    fun validarProcesso(pid: Int, id_maquina: Int, fk_empresa: Int): Boolean {
         val queryValidacao = jdbcTemplate.queryForObject(
-            "SELECT count(*) FROM processos WHERE pid = ? and fk_maquinaP = $id_maquina",
+            "SELECT count(*) FROM processos WHERE pid = ? and fk_maquinaP = $id_maquina and fk_empresaP = $fk_empresa",
             Int::class.java,
             pid
         )

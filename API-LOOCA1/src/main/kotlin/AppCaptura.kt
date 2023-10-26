@@ -11,17 +11,17 @@ fun main() {
 
     val looca = Looca()
     val login = Usuario()
-    val dadoslogin = DadosLogin()
+    val dadoslogin = LoginRepositorio()
 
     login.email = JOptionPane.showInputDialog("Digite o seu email!").toString()
     login.senha = JOptionPane.showInputDialog("Digite a sua senha!").toString()
 
     dadoslogin.iniciar()
-    val fk_empresa = dadoslogin.validarLogin(login)
-        if(fk_empresa > 0) {
+        if(dadoslogin.validarLogin(login)) {
+            JOptionPane.showMessageDialog(null, dadoslogin.comprimentar(login))
 
-            exibirMensagem("Login válido")
-            var listaDeMaquinas = dadoslogin.mostrarMaquina()
+            var fk_empresa = dadoslogin.verificarEmpresa(login)
+            var listaDeMaquinas = dadoslogin.mostrarMaquina(fk_empresa)
             var id_maquina = JOptionPane.showInputDialog("Digite o id da maquina que você deseja monitorar \n \r $listaDeMaquinas").toInt()
 
             val repositorio = DadosRepositorios()
@@ -31,31 +31,29 @@ fun main() {
             while (true) {
                 //CAPTURA DE PROCESSOS
                 val novoProcesso = capturarDadosP(looca)
-                repositorio.cadastrarProcesso(novoProcesso, id_maquina)
+                repositorio.cadastrarProcesso(novoProcesso, id_maquina, fk_empresa)
 
                 // CAPTURA DE JANELAS
                 val novaJanela = capturarDadosJ(looca)
-                repositorio.cadastrarJanela(novaJanela, id_maquina)
+                repositorio.cadastrarJanela(novaJanela, id_maquina, fk_empresa)
 
                 //CAPTURA DE REDE
                 val novaRede = capturarDadosR(looca)
-                repositorio.cadastrarRede(novaRede, id_maquina)
+                repositorio.cadastrarRede(novaRede, id_maquina, fk_empresa)
 
                 TimeUnit.SECONDS.sleep(60)
             }
         }else{
-
-            exibirMensagem("Login inválido!!")
-
+            JOptionPane.showMessageDialog(null, """
+                Não conseguimos validar seu login dentro da nossa plataforma, caso você ache que isso é um erro, por favor, entre em contato conosco
+                """.trimIndent())
         }
 }
-
 fun capturarDadosJ(looca: Looca): MutableList<Janela>? {
         val janela = looca.grupoDeJanelas
         var janelasVisiveis = janela.janelasVisiveis
 
-    return janelasVisiveis
-
+        return janelasVisiveis
 }
 
 fun capturarDadosR(looca: Looca ): Redes {
@@ -82,10 +80,5 @@ fun capturarDadosP(looca: Looca): MutableList<Processo>? {
     return listaProcessos
 }
 
-fun exibirMensagem(mensagem: String){
-
-    JOptionPane.showMessageDialog(null, mensagem)
-
-}
 
 
