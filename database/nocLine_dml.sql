@@ -1,4 +1,5 @@
 /* INSERTS OBRIGATÓRIOS PARA O FUNCIONAMENTO DO PROGRAMA ! */
+-- DROP DATABASE nocline;
 USE nocLine;
 
 -- tabela empresa
@@ -65,7 +66,6 @@ INNER JOIN componente co ON m.id_maquina = co.fk_maquina_componente;
 
 -- selects 
 select * from janela;
-SELECT COUNT(*) monitoramento where descricao = "uso cpu";
 select * from monitoramento;
 select * from processos;
 delete from colaborador where id_colaborador = 14;

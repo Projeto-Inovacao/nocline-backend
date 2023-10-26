@@ -3,38 +3,57 @@ import com.github.britooo.looca.api.group.janelas.Janela
 import com.github.britooo.looca.api.group.processos.Processo
 import java.time.LocalDateTime // biblioteca para lidar com informações de data e hora
 import java.util.concurrent.TimeUnit // biblioteca usada para manipulação de unidades de tempo.
+import javax.swing.JOptionPane
 
 
 fun main() {
     Conexao.criarTabelas()
+
     val looca = Looca()
+    val login = Usuario()
+    val dadoslogin = LoginRepositorio()
 
-    val repositorio = DadosRepositorios()
-    repositorio.iniciar()
+    login.email = JOptionPane.showInputDialog("Digite o seu email!").toString()
+    login.senha = JOptionPane.showInputDialog("Digite a sua senha!").toString()
 
-    while (true) {
-        //CAPTURA DE PROCESSOS
-        val novoProcesso = capturarDadosP(looca)
-        repositorio.cadastrarProcesso(novoProcesso)
+    dadoslogin.iniciar()
+        if(dadoslogin.validarLogin(login)) {
+            JOptionPane.showMessageDialog(null, dadoslogin.comprimentar(login))
 
-        // CAPTURA DE JANELAS
-        val novaJanela = capturarDadosJ(looca)
-        repositorio.cadastrarJanela(novaJanela)
+            var fk_empresa = dadoslogin.verificarEmpresa(login)
+            var listaDeMaquinas = dadoslogin.mostrarMaquina(fk_empresa)
+            var id_maquina = JOptionPane.showInputDialog("Digite o id da maquina que você deseja monitorar \n \r $listaDeMaquinas").toInt()
 
-        //CAPTURA DE REDE
-        val novaRede = capturarDadosR(looca)
-        repositorio.cadastrarRede(novaRede)
+            val repositorio = DadosRepositorios()
+            repositorio.iniciar()
 
-        TimeUnit.SECONDS.sleep(60)
-    }
+            JOptionPane.showConfirmDialog(null,"O monitoramento irá inicalizar agora")
+            while (true) {
+                //CAPTURA DE PROCESSOS
+                val novoProcesso = capturarDadosP(looca)
+                repositorio.cadastrarProcesso(novoProcesso, id_maquina, fk_empresa)
+
+                // CAPTURA DE JANELAS
+                val novaJanela = capturarDadosJ(looca)
+                repositorio.cadastrarJanela(novaJanela, id_maquina, fk_empresa)
+
+                //CAPTURA DE REDE
+                val novaRede = capturarDadosR(looca)
+                repositorio.cadastrarRede(novaRede, id_maquina, fk_empresa)
+
+                TimeUnit.SECONDS.sleep(60)
+            }
+        }else{
+            JOptionPane.showMessageDialog(null, """
+                Não conseguimos validar seu login dentro da nossa plataforma, caso você ache que isso é um erro, por favor, entre em contato conosco
+                """.trimIndent())
+        }
 }
-
 fun capturarDadosJ(looca: Looca): MutableList<Janela>? {
         val janela = looca.grupoDeJanelas
         var janelasVisiveis = janela.janelasVisiveis
 
-    return janelasVisiveis
-
+        return janelasVisiveis
 }
 
 fun capturarDadosR(looca: Looca ): Redes {
@@ -60,5 +79,6 @@ fun capturarDadosP(looca: Looca): MutableList<Processo>? {
     var listaProcessos = processos.processos
     return listaProcessos
 }
+
 
 
