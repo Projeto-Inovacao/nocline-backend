@@ -73,4 +73,4 @@ while not event.is_set():
         if mydb.is_connected():  # Verifica se a conexão com o banco de dados está aberta
             mycursor.close()  # Aqui fecha uma parte
             mydb.close()  # Aqui fecha outra, só vai cair aqui dentro se clicar esc, ai chama a função de fechar o loop, caso contrário continua dando INSERT
-            time.sleep(60)
+            time.sleep(5)
