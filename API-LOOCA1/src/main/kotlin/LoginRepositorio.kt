@@ -23,7 +23,7 @@ class LoginRepositorio {
             )
             return true
         } catch (e: EmptyResultDataAccessException) {
-            println("Seu login não está no banco")
+            println("Seu login não está no banco...")
             return false // Ou outro valor padrão que faça sentido no seu contexto
         }
     }
@@ -35,7 +35,8 @@ class LoginRepositorio {
             """, BeanPropertyRowMapper(Usuario::class.java)
         )
         val mensagem = """
-            Boas-Vindas, ${usuario.nome}, seu login foi validado com Sucesso! Agora você irá prosseguir para etapa de monitoramento
+            Boas-vindas, ${usuario.nome}, seu login foi validado com sucesso!
+            Agora você irá prosseguir para etapa de monitoramento. 
         """.trimIndent()
 
         return mensagem

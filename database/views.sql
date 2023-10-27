@@ -127,8 +127,21 @@ WHERE D.rn = 1;
 -- view janelas
 create view VW_JANELAS_CHART as select nome_janela, status_abertura, fk_maquinaJ, fk_empresaJ from janela;
 
+select * from VW_JANELAS_CHART;
+
+SELECT COUNT(*) as total_registros
+FROM monitoramento
+WHERE descricao = 'uso ram' AND dado_coletado > 5100;
 -- selects views:
 select * from VW_CPU_CHART;
-select * from VW_RAM_CHART;
+select COUNT(*) from VW_REDE_CHART where recebidos > 81050816 AND recebidos < 250230686 ;
 select * from VW_DISCO_CHART;
 select * from VW_REDE_CHART;
+
+SELECT COUNT(*) as total_registros
+FROM monitoramento
+WHERE descricao = 'uso cpu' AND dado_coletado >= 1.4;
+
+SELECT COUNT(*) as total_registros
+FROM monitoramento
+WHERE descricao = 'uso cpu' AND dado_coletado > 1.4 AND dado_coletado < 5.1;

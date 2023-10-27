@@ -34,8 +34,8 @@ class DadosRepositorios {
                         """
                 UPDATE janela
                 SET data_hora = ?,
-                    status_abertura = ?,
-                WHERE nome_janela = ? AND fk_janelaM = $id_maquina AND fk_empresa = $fk_empresa
+                    status_abertura = ?
+                WHERE nome_janela = ? AND fk_maquinaJ = $id_maquina AND fk_empresaJ = $fk_empresa
                 """,
                         LocalDateTime.now(),
                         true,

@@ -4,7 +4,8 @@ USE nocLine;
 
 -- tabela empresa
 INSERT INTO empresa VALUES (null, 'Empresa Exemplo', '12.345.678/9012-34');
-SELECT * FROM empresa;
+SELECT * FROM endereco;
+
 
 -- tabela nivel de acesso
 INSERT INTO nivel_acesso VALUES
@@ -16,7 +17,7 @@ SELECT * FROM nivel_acesso;
 -- tabela colaborador
 INSERT INTO colaborador VALUES (null, 'Nome Colaborador Exemplo', '123.456.789-01', 'no@email.com', '12-34567-8901', 'senha321', 1, 1);
 SELECT * FROM colaborador;
-
+ 
 
 -- tabela endereco
 INSERT INTO endereco VALUES (null, '12345-678', 123, 'Rua Exemplo', 'Bairro Exemplo', 'Cidade Exemplo', 'Estado Exemplo', 'Pais Exemplo', 'Complemento Exemplo',1);
@@ -67,4 +68,15 @@ INNER JOIN componente co ON m.id_maquina = co.fk_maquina_componente;
 select * from janela;
 select * from monitoramento;
 select * from processos;
+delete from colaborador where id_colaborador = 14;
+delete from empresa where id_empresa = 20;
+select * from colaborador;
+select * from nivel_acesso;
 
+select 
+    * from colaborador 
+     join empresa on fk_empresa = id_empresa;
+     
+     SELECT COUNT(*) as total_registros
+FROM monitoramento
+WHERE descricao = 'uso ram' AND dado_coletado > 5100;
