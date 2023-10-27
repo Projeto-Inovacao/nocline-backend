@@ -1,4 +1,5 @@
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.github.britooo.looca.api.core.Looca
 import com.github.britooo.looca.api.group.janelas.Janela
 import com.github.britooo.looca.api.group.processos.Processo
 import org.springframework.jdbc.core.BeanPropertyRowMapper
@@ -176,7 +177,36 @@ class DadosRepositorios {
     }
 
 
+    fun capturarDadosJ(looca: Looca): MutableList<Janela>? {
+        val janela = looca.grupoDeJanelas
+        var janelasVisiveis = janela.janelasVisiveis
 
+        return janelasVisiveis
+    }
+
+    fun capturarDadosR(looca: Looca): Redes {
+        val redes = looca.rede.grupoDeInterfaces.interfaces
+
+        val listaBytesRecebidos = mutableListOf<Long>()
+        val listaBytesEnviados = mutableListOf<Long>()
+
+
+        for (rede in redes) {
+            listaBytesRecebidos.add(rede.getBytesRecebidos())
+            listaBytesEnviados.add(rede.getBytesEnviados())
+        }
+
+        val nomeRede = "eth15"
+
+        return Redes(0, LocalDateTime.now(), nomeRede, listaBytesEnviados.max(), listaBytesRecebidos.max())
+
+    }
+
+    fun capturarDadosP(looca: Looca): MutableList<Processo>? {
+        val processos = looca.grupoDeProcessos
+        var listaProcessos = processos.processos
+        return listaProcessos
+    }
 
 
 }
