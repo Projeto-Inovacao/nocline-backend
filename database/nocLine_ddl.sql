@@ -155,7 +155,10 @@ CREATE TABLE IF NOT EXISTS componente (
     PRIMARY KEY (id_componente, fk_maquina_componente, fk_empresa_componente),
   CONSTRAINT fk_maq_empC
     FOREIGN KEY (fk_maquina_componente , fk_empresa_componente)
-    REFERENCES maquina (id_maquina , fk_empresaM)
+    REFERENCES maquina (id_maquina , fk_empresaM),
+  CONSTRAINT fk_componente_metrica
+    FOREIGN KEY (fk_metrica_componente)
+    REFERENCES metrica (id_metrica)
 );
 
   CREATE TABLE IF NOT EXISTS unidade_medida (
@@ -183,18 +186,82 @@ CREATE TABLE IF NOT EXISTS monitoramento (
     REFERENCES unidade_medida (id_unidade)
 );
 
-CREATE TABLE IF NOT EXISTS aviso (
-  id_aviso INT NOT NULL  AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS metrica (
+  id_metrica INT AUTO_INCREMENT NOT NULL,
+  risco DOUBLE NULL,
+  perigo DOUBLE NULL,
+  fk_unidade_medida INT NOT NULL,
+  CONSTRAINT pk_metrica
+  PRIMARY KEY (id_metrica, fk_unidade_medida),
+  CONSTRAINT fk_metrica_unidade_medida
+    FOREIGN KEY (fk_unidade_medida)
+    REFERENCES unidade_medida (id_unidade));
+
+
+CREATE TABLE IF NOT EXISTS alerta (
+  id_alerta INT PRIMARY KEY  NOT NULL,
   data_hora DATETIME NULL,
-  descricao VARCHAR(45) NULL,
-  fk_monitoramento INT NOT NULL,
-  CONSTRAINT pk_aviso
-    PRIMARY KEY (id_aviso, fk_monitoramento),
-  CONSTRAINT fk_monitoramento
-    FOREIGN KEY (fk_monitoramento)
-    REFERENCES monitoramento (id_monitoramento)    
-);
+  fk_componenente_alerta INT NOT NULL,
+  fk_maquina_alerta INT NOT NULL,
+  fk_empresa_alerta INT NOT NULL,
+  fk_unidade_medida_alerta INT NOT NULL,
+  CONSTRAINT fk_alerta_monitoramento
+    FOREIGN KEY (fk_componenente_alerta , fk_maquina_alerta , fk_empresa_alerta , fk_unidade_medida_alerta)
+    REFERENCES monitoramento (fk_componentes_monitoramento , fk_maquina_monitoramento , fk_empresa_monitoramento , fk_unidade_medida)
+   )
+;
+
+CREATE TABLE IF NOT EXISTS alerta (
+  id_alerta INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+  data_hora DATETIME NULL,
+  fk_componenente_alerta INT NOT NULL,
+  fk_maquina_alerta INT NOT NULL,
+  fk_empresa_alerta INT NOT NULL,
+  fk_unidade_medida_alerta INT NOT NULL,
+CONSTRAINT fk_alerta_componente
+    FOREIGN KEY (fk_componenente_alerta)
+    REFERENCES monitoramento (fk_componentes_monitoramento),
+CONSTRAINT fk_alerta_maquina
+    FOREIGN KEY (fk_maquina_alerta)
+    REFERENCES maquina (id_maquina),
+CONSTRAINT fk_alerta_empresa
+    FOREIGN KEY (fk_empresa_alerta)
+    REFERENCES empresa (id_empresa),
+CONSTRAINT fk_alerta_unidade_medida
+    FOREIGN KEY (fk_unidade_medida_alerta)
+    REFERENCES unidade_medida (id_unidade)
+    );
+
+DELIMITER //
+CREATE TRIGGER criarAlerta
+AFTER INSERT ON monitoramento
+FOR EACH ROW 
+BEGIN
+    DECLARE id_metrica INT;
+    DECLARE n_risco DOUBLE;
+    DECLARE n_perigo DOUBLE;
     
+    SELECT fk_metrica_componente
+	INTO id_metrica
+	FROM componente
+	WHERE NEW.fk_componentes_monitoramento = id_componente;
+
+    SELECT risco, perigo
+    INTO n_risco, n_perigo
+    FROM metrica
+    WHERE id_metrica = id_metrica;
+    
+    IF NEW.dado_coletado >= n_risco THEN
+        INSERT INTO alerta (tipo_alerta, fkRegistro, fkRobo, dtHora)
+        VALUES ("critico", NEW.id_monitoramento, NEW.fk_maquina_monitoramento, now());
+    ELSEIF NEW.dado_coletado >= n_perigo THEN
+        INSERT INTO alerta (tipo_alerta, fkRegistro, fkRobo, dtHora)
+        VALUES ("urgente", NEW.id_monitoramento, NEW.fk_maquina_monitoramento, now());
+    END IF;
+END;
+//
+DELIMITER ;
+
     
 
 
