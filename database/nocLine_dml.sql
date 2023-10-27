@@ -80,3 +80,21 @@ select
      SELECT COUNT(*) as total_registros
 FROM monitoramento
 WHERE descricao = 'uso ram' AND dado_coletado > 5100;
+
+-- metrica para a RAM
+INSERT INTO metrica (risco, perigo, fk_unidade_medida)
+VALUES (88.43, 90.71, 2);
+
+-- metrica de cpu
+INSERT INTO metrica (risco, perigo, fk_unidade_medida)
+VALUES (4.04, 5.1, 2);
+
+select * from componente;
+alter table componente add column fk_metrica_componente int;
+alter table componente add CONSTRAINT fk_componente_metrica
+    FOREIGN KEY (fk_metrica_componente)
+    REFERENCES metrica (id_metrica);
+    drop trigger criarAlerta;
+select * from alerta;
+select * from monitoramento;
+insert into monitoramento values(null, 19.0, now(), 'uso cpu', 1, 1, 1, 2);
