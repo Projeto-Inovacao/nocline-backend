@@ -1,13 +1,14 @@
 /* INSERTS OBRIGATÓRIOS PARA O FUNCIONAMENTO DO PROGRAMA ! */
 USE nocLine;
-select * from contrato;
+select * from plano;
 INSERT INTO plano VALUES 
 (null, "Essentials", 10, 1230.00, 15.38), 
 (null, "Master", 25, 1340.00, 12.16), 
 (null, "Plus", 50, 1480.00, 10.55);
+select * from contrato;
  alter table contrato modify column id_contrato int auto_increment;
 INSERT INTO contrato VALUES
-(null, "2023-11-01", "2024-11-01", 0, 1480.00, "Crédito", 4, 3);
+(null, "2023-11-01", "2024-11-01", 0, 1480.00, "Crédito", 1, 3);
 
 select 
     colaborador.*, empresa.cnpj, contrato.data_inicio, contrato.data_termino, plano.nome_plano, contrato.preco_total from colaborador 
