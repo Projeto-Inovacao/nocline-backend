@@ -57,24 +57,24 @@ WHERE
 
 select * from VW_DISCO_CHART;
 
+
+drop view VW_REDE_CHART;
 -- view REDE
 CREATE VIEW VW_REDE_CHART AS
 SELECT
-    DATE_FORMAT(data_hora, "%H:%i:%s") as data_hora,
-    MAX(CASE WHEN descricao = 'bytes enviados' THEN dado_coletado END) AS enviados,
-    MAX(CASE WHEN descricao = 'bytes recebidos' THEN dado_coletado END) AS recebidos,
-    Representacao,
-    nome_componente,
-    id_maquina,
-    hostname,
-    razao_social
+    DATE_FORMAT(monitoramento.data_hora, "%H:%i:%s") as data_hora,
+    ROUND(MAX(CASE WHEN monitoramento.descricao = 'bytes enviados' THEN monitoramento.dado_coletado / 1048576.0 END), 2) AS enviados,
+    ROUND(MAX(CASE WHEN monitoramento.descricao = 'bytes recebidos' THEN monitoramento.dado_coletado / 1048576.0 END), 2) AS recebidos,
+    componente.nome_componente,
+    componente.fk_maquina_componente as id_maquina,
+    MAX(maquina.hostname) AS hostname,
+    MAX(empresa.razao_social) AS razao_social
 FROM monitoramento
-JOIN unidade_medida ON fk_unidade_medida = id_unidade
-JOIN componente ON fk_componentes_monitoramento = id_componente
-JOIN maquina as M on fk_maquina_monitoramento = M.id_maquina
-JOIN empresa ON M.fk_empresaM = empresa.id_empresa
-WHERE nome_componente = 'REDE'
-GROUP BY data_hora, Representacao, nome_componente, id_maquina, hostname, razao_social;
+JOIN componente ON monitoramento.fk_componentes_monitoramento = componente.id_componente
+JOIN maquina ON monitoramento.fk_maquina_monitoramento = maquina.id_maquina
+JOIN empresa ON maquina.fk_empresaM = empresa.id_empresa
+WHERE componente.nome_componente = 'REDE'
+GROUP BY monitoramento.data_hora, componente.nome_componente, componente.fk_maquina_componente;
 
 select * from VW_REDE_CHART;
 

@@ -1,5 +1,4 @@
 /* INSERTS OBRIGATÓRIOS PARA O FUNCIONAMENTO DO PROGRAMA ! */
--- DROP DATABASE nocline;
 USE nocLine;
 select * from contrato;
 INSERT INTO plano VALUES 
@@ -34,7 +33,6 @@ SELECT * FROM nivel_acesso;
 -- tabela colaborador
 INSERT INTO colaborador VALUES (null, 'Nome Colaborador Exemplo', '123.456.789-01', 'no@email.com', '12-34567-8901', 'senha321', 1, 1);
 SELECT * FROM colaborador;
- 
 
 -- tabela endereco
 INSERT INTO endereco VALUES (null, '12345-678', 123, 'Rua Exemplo', 'Bairro Exemplo', 'Cidade Exemplo', 'Estado Exemplo', 'Pais Exemplo', 'Complemento Exemplo',1);
@@ -47,7 +45,7 @@ INSERT INTO unidade_medida VALUES
 (null, 'MegaBytes', 'MB');
 
 -- tabela maquina
-INSERT INTO maquina VALUES (null, '177.181.7.16', 'Windows', 'gyulia_piqueira', 'Modelo Exemplo', 'CCO', 1);
+INSERT INTO maquina VALUES (null, '177.181.7.16', 'Windows', 'DESKTOP-67VH7K5', 'Modelo Exemplo', 'CCO', 1);
 SELECT * FROM maquina;
 select * from metrica;
 -- tabela componente
@@ -75,7 +73,7 @@ INNER JOIN maquina m ON e.id_empresa = m.fk_empresaM
 INNER JOIN componente co ON m.id_maquina = co.fk_maquina_componente;
 
 -- selects 
-select * from janela;
+select * from componente;
 select * from monitoramento;
 select * from processos;
 delete from colaborador where id_colaborador = 14;
