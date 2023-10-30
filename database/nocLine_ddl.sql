@@ -63,13 +63,10 @@ CREATE TABLE IF NOT EXISTS chat (
 
 CREATE TABLE IF NOT EXISTS plano (
   id_plano INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  essentials TINYINT NULL,
-  master TINYINT NULL,
-  plus TINYINT NULL,
+  nome_plano varchar(100),
   qtd_min_maq INT NULL,
   preco_min DOUBLE NULL,
-  valor_add_maq INT NULL,
-  data_assinatura DATE NULL
+  valor_add_maq INT NULL
 );
 
 CREATE TABLE IF NOT EXISTS contrato (
@@ -146,11 +143,29 @@ CREATE TABLE IF NOT EXISTS processos (
     REFERENCES maquina (id_maquina, fk_empresaM)
 );
 
+ CREATE TABLE IF NOT EXISTS unidade_medida (
+  id_unidade INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  tipo_dado VARCHAR(45) NULL,
+  representacao CHAR(2) NULL
+);
+
+CREATE TABLE IF NOT EXISTS metrica (
+  id_metrica INT AUTO_INCREMENT NOT NULL,
+  risco DOUBLE NULL,
+  perigo DOUBLE NULL,
+  fk_unidade_medida INT NOT NULL,
+  CONSTRAINT pk_metrica
+  PRIMARY KEY (id_metrica, fk_unidade_medida),
+  CONSTRAINT fk_metrica_unidade_medida
+    FOREIGN KEY (fk_unidade_medida)
+    REFERENCES unidade_medida (id_unidade));
+
 CREATE TABLE IF NOT EXISTS componente (
   id_componente INT NOT NULL AUTO_INCREMENT,
   nome_componente VARCHAR(45) NULL,
   fk_maquina_componente INT NOT NULL,
   fk_empresa_componente INT NOT NULL,
+  fk_metrica_componente INT NOT NULL,
   CONSTRAINT pk_componente
     PRIMARY KEY (id_componente, fk_maquina_componente, fk_empresa_componente),
   CONSTRAINT fk_maq_empC
@@ -161,11 +176,7 @@ CREATE TABLE IF NOT EXISTS componente (
     REFERENCES metrica (id_metrica)
 );
 
-  CREATE TABLE IF NOT EXISTS unidade_medida (
-  id_unidade INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  tipo_dado VARCHAR(45) NULL,
-  representacao CHAR(2) NULL
-);
+ 
   
 CREATE TABLE IF NOT EXISTS monitoramento (
   id_monitoramento INT NOT NULL AUTO_INCREMENT,
@@ -186,30 +197,7 @@ CREATE TABLE IF NOT EXISTS monitoramento (
     REFERENCES unidade_medida (id_unidade)
 );
 
-CREATE TABLE IF NOT EXISTS metrica (
-  id_metrica INT AUTO_INCREMENT NOT NULL,
-  risco DOUBLE NULL,
-  perigo DOUBLE NULL,
-  fk_unidade_medida INT NOT NULL,
-  CONSTRAINT pk_metrica
-  PRIMARY KEY (id_metrica, fk_unidade_medida),
-  CONSTRAINT fk_metrica_unidade_medida
-    FOREIGN KEY (fk_unidade_medida)
-    REFERENCES unidade_medida (id_unidade));
 
-
-CREATE TABLE IF NOT EXISTS alerta (
-  id_alerta INT PRIMARY KEY  NOT NULL,
-  data_hora DATETIME NULL,
-  fk_componenente_alerta INT NOT NULL,
-  fk_maquina_alerta INT NOT NULL,
-  fk_empresa_alerta INT NOT NULL,
-  fk_unidade_medida_alerta INT NOT NULL,
-  CONSTRAINT fk_alerta_monitoramento
-    FOREIGN KEY (fk_componenente_alerta , fk_maquina_alerta , fk_empresa_alerta , fk_unidade_medida_alerta)
-    REFERENCES monitoramento (fk_componentes_monitoramento , fk_maquina_monitoramento , fk_empresa_monitoramento , fk_unidade_medida)
-   )
-;
 
 CREATE TABLE IF NOT EXISTS alerta (
   id_alerta INT PRIMARY KEY AUTO_INCREMENT NOT NULL,

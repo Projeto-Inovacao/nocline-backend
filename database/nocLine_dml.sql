@@ -1,10 +1,27 @@
 /* INSERTS OBRIGATÓRIOS PARA O FUNCIONAMENTO DO PROGRAMA ! */
 -- DROP DATABASE nocline;
 USE nocLine;
+select * from contrato;
+INSERT INTO plano VALUES 
+(null, "Essentials", 10, 1230.00, 15.38), 
+(null, "Master", 25, 1340.00, 12.16), 
+(null, "Plus", 50, 1480.00, 10.55);
+ alter table contrato modify column id_contrato int auto_increment;
+INSERT INTO contrato VALUES
+(null, "2023-11-01", "2024-11-01", 0, 1480.00, "Crédito", 4, 3);
 
+select 
+    colaborador.*, empresa.cnpj, contrato.data_inicio, contrato.data_termino, plano.nome_plano, contrato.preco_total from colaborador 
+     join empresa on fk_empresa = id_empresa
+     left join contrato on fk_empresaCo = id_empresa
+     left join plano on fk_plano = id_plano;
 -- tabela empresa
 INSERT INTO empresa VALUES (null, 'Empresa Exemplo', '12.345.678/9012-34');
-SELECT * FROM endereco;
+select * from colaborador;
+update colaborador set email = 'fernanda@metro.com' where id_colaborador =2;
+alter table endereco modify column cidade varchar(200);
+select * from maquina;
+update maquina set ip = '131.72.61.67' where id_maquina = 2;
 
 
 -- tabela nivel de acesso
@@ -26,28 +43,22 @@ SELECT * FROM endereco;
 -- tabela unidade de medida
 INSERT INTO unidade_medida VALUES
 (null, 'Bytes', 'B'),
-(null, 'Porcentagem', '%');
-SELECT * FROM unidade_medida;
-
--- tabela planos
-INSERT INTO plano (id_plano, essentials, master, plus) VALUES
-(null, 1, 0, 0),
-(null, 0, 1, 0),
-(null, 0, 0, 1);
-SELECT * FROM plano;
+(null, 'Porcentagem', '%'),
+(null, 'MegaBytes', 'MB');
 
 -- tabela maquina
 INSERT INTO maquina VALUES (null, '177.181.7.16', 'Windows', 'gyulia_piqueira', 'Modelo Exemplo', 'CCO', 1);
 SELECT * FROM maquina;
-
+select * from metrica;
 -- tabela componente
 INSERT INTO componente VALUES
-(null, 'CPU', 1, 1),
-(null, 'DISCO', 1, 1),
-(null, 'RAM', 1, 1),
-(null, 'REDE', 1, 1);
-SELECT * FROM componente;
-
+(null, 'RAM', 1, 4, 1),
+(null, 'CPU', 1, 4, 2),
+(null, 'DISCO', 1, 4, 3),
+(null, 'REDE', 1, 4, 4);
+SELECT * FROM maquina;
+SELECT id_unidade FROM unidade_medida WHERE representacao = '%';
+SELECT id_componente from componente WHERE nome_componente = 'DISCO' and fk_maquina_componente = 1;
 -- select completo
 SELECT 
   e.id_empresa, e.razao_social, e.cnpj,
@@ -62,7 +73,6 @@ INNER JOIN nivel_acesso n ON c.fk_nivel_acesso = n.id_nivel_acesso
 INNER JOIN endereco en ON e.id_empresa = en.fk_empresaE
 INNER JOIN maquina m ON e.id_empresa = m.fk_empresaM
 INNER JOIN componente co ON m.id_maquina = co.fk_maquina_componente;
-
 
 -- selects 
 select * from janela;
@@ -88,6 +98,18 @@ VALUES (88.43, 90.71, 2);
 -- metrica de cpu
 INSERT INTO metrica (risco, perigo, fk_unidade_medida)
 VALUES (4.04, 5.1, 2);
+
+-- metrica de disco
+INSERT INTO metrica (risco, perigo, fk_unidade_medida)
+VALUES (50.96, 50.99, 2);
+
+-- metrica de disco
+INSERT INTO metrica (risco, perigo, fk_unidade_medida)
+VALUES (50.96, 50.99, 2);
+
+-- metrica de rede
+INSERT INTO metrica (risco, perigo, fk_unidade_medida)
+VALUES (176.45, 250.23, 2);
 
 select * from componente;
 alter table componente add column fk_metrica_componente int;

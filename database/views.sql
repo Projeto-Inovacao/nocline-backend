@@ -1,4 +1,5 @@
 use nocline;
+
  
 -- view CPU
 CREATE VIEW VW_CPU_CHART AS
@@ -137,6 +138,7 @@ select * from VW_CPU_CHART;
 select COUNT(*) from VW_REDE_CHART where recebidos > 81050816 AND recebidos < 250230686 ;
 select * from VW_DISCO_CHART;
 select * from VW_REDE_CHART;
+select * from janela order by data_hora desc;
 
 SELECT COUNT(*) as total_registros
 FROM monitoramento
@@ -145,3 +147,6 @@ WHERE descricao = 'uso cpu' AND dado_coletado >= 1.4;
 SELECT COUNT(*) as total_registros
 FROM monitoramento
 WHERE descricao = 'uso cpu' AND dado_coletado > 1.4 AND dado_coletado < 5.1;
+
+select * from monitoramento;
+alter table processos add primary key (pid, fk_empresaP, fk_maquinaP);
