@@ -151,8 +151,8 @@ CREATE TABLE IF NOT EXISTS processos (
 
 CREATE TABLE IF NOT EXISTS metrica (
   id_metrica INT AUTO_INCREMENT NOT NULL,
-  risco DOUBLE NULL,
-  perigo DOUBLE NULL,
+  dado_coletado DOUBLE NOT NULL,
+  tipo_alerta DOUBLE NOT NULL ,
   fk_unidade_medida INT NOT NULL,
   CONSTRAINT pk_metrica
   PRIMARY KEY (id_metrica, fk_unidade_medida),
@@ -201,6 +201,7 @@ CREATE TABLE IF NOT EXISTS alerta (
   id_alerta INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
   tipo_alerta VARCHAR(20),
   data_hora DATETIME NULL,
+  dado_coletado DOUBLE,
   fk_componenente_alerta INT NOT NULL,
   fk_maquina_alerta INT NOT NULL,
   fk_empresa_alerta INT NOT NULL,
@@ -218,35 +219,28 @@ CONSTRAINT fk_alerta_unidade_medida
     FOREIGN KEY (fk_unidade_medida_alerta)
     REFERENCES unidade_medida (id_unidade)
     );
-    
+
 DELIMITER //
 CREATE TRIGGER trigger_alerta AFTER INSERT ON monitoramento FOR EACH ROW
 BEGIN
+	DECLARE v_metrica INT;
     DECLARE v_risco DOUBLE;
     DECLARE v_perigo DOUBLE;
-    DECLARE v_unidade VARCHAR(45);
+    DECLARE v_dado_coletado DOUBLE;
+    DECLARE v_nome_componente varchar(45);
+
+	select fk_metrica_componente, nome_componente from componente where new.fk_componentes_monitoramento = id_componente into v_metrica, v_nome_componente;
     
-    -- Obtém os valores de risco, perigo e unidade de medida com base na métrica
-    SELECT m.risco, m.perigo, u.tipo_dado INTO v_risco, v_perigo, v_unidade
-    FROM metrica m
-    INNER JOIN unidade_medida u ON m.fk_unidade_medida = u.id_unidade
-    WHERE m.id_metrica = NEW.fk_metrica_componente;
-    
-    -- Verifica a unidade de medida associada à métrica
-    IF v_unidade = 'MegaBytes' THEN
-        -- Transforma os dados coletados em megabytes
-        SET NEW.dado_coletado = NEW.dado_coletado / 1048576;
-    END IF;
+    select risco, perigo into v_risco, v_perigo from metrica where id_metrica = v_metrica;
     
     IF NEW.dado_coletado >= v_risco THEN
         INSERT INTO alerta (tipo_alerta, fk_componenente_alerta, fk_maquina_alerta, fk_empresa_alerta, fk_unidade_medida_alerta, data_hora)
-        VALUES ('crítico', NEW.fk_componentes_monitoramento, NEW.fk_maquina_monitoramento, NEW.fk_empresa_monitoramento, NEW.fk_unidade_medida, NOW());
+        VALUES ('risco', NEW.fk_componentes_monitoramento, NEW.fk_maquina_monitoramento, NEW.fk_empresa_monitoramento, NEW.fk_unidade_medida, NOW());
     ELSEIF NEW.dado_coletado >= v_perigo THEN
         INSERT INTO alerta (tipo_alerta, fk_componenente_alerta, fk_maquina_alerta, fk_empresa_alerta, fk_unidade_medida_alerta, data_hora)
-        VALUES ('urgente', NEW.fk_componentes_monitoramento, NEW.fk_maquina_monitoramento, NEW.fk_empresa_monitoramento, NEW.fk_unidade_medida, NOW());
+        VALUES ('perigo', NEW.fk_componentes_monitoramento, NEW.fk_maquina_monitoramento, NEW.fk_empresa_monitoramento, NEW.fk_unidade_medida, NOW());
     END IF;
 END;
 
 //
 DELIMITER ;
-
