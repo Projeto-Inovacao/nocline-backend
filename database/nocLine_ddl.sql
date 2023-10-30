@@ -63,9 +63,7 @@ CREATE TABLE IF NOT EXISTS chat (
 
 CREATE TABLE IF NOT EXISTS plano (
   id_plano INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  essentials TINYINT NULL,
-  master TINYINT NULL,
-  plus TINYINT NULL,
+  nome_plano VARCHAR(100) NULL,
   qtd_min_maq INT NULL,
   preco_min DOUBLE NULL,
   valor_add_maq INT NULL,
@@ -146,11 +144,29 @@ CREATE TABLE IF NOT EXISTS processos (
     REFERENCES maquina (id_maquina, fk_empresaM)
 );
 
+  CREATE TABLE IF NOT EXISTS unidade_medida (
+  id_unidade INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  tipo_dado VARCHAR(45) NULL,
+  representacao CHAR(2) NULL
+);
+
+CREATE TABLE IF NOT EXISTS metrica (
+  id_metrica INT AUTO_INCREMENT NOT NULL,
+  risco DOUBLE NULL,
+  perigo DOUBLE NULL,
+  fk_unidade_medida INT NOT NULL,
+  CONSTRAINT pk_metrica
+  PRIMARY KEY (id_metrica, fk_unidade_medida),
+  CONSTRAINT fk_metrica_unidade_medida
+    FOREIGN KEY (fk_unidade_medida)
+    REFERENCES unidade_medida (id_unidade));
+
 CREATE TABLE IF NOT EXISTS componente (
   id_componente INT NOT NULL AUTO_INCREMENT,
   nome_componente VARCHAR(45) NULL,
   fk_maquina_componente INT NOT NULL,
   fk_empresa_componente INT NOT NULL,
+  fk_metrica_componente INT NOT NULL,
   CONSTRAINT pk_componente
     PRIMARY KEY (id_componente, fk_maquina_componente, fk_empresa_componente),
   CONSTRAINT fk_maq_empC
@@ -159,12 +175,6 @@ CREATE TABLE IF NOT EXISTS componente (
   CONSTRAINT fk_componente_metrica
     FOREIGN KEY (fk_metrica_componente)
     REFERENCES metrica (id_metrica)
-);
-
-  CREATE TABLE IF NOT EXISTS unidade_medida (
-  id_unidade INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  tipo_dado VARCHAR(45) NULL,
-  representacao CHAR(2) NULL
 );
   
 CREATE TABLE IF NOT EXISTS monitoramento (
@@ -186,33 +196,9 @@ CREATE TABLE IF NOT EXISTS monitoramento (
     REFERENCES unidade_medida (id_unidade)
 );
 
-CREATE TABLE IF NOT EXISTS metrica (
-  id_metrica INT AUTO_INCREMENT NOT NULL,
-  risco DOUBLE NULL,
-  perigo DOUBLE NULL,
-  fk_unidade_medida INT NOT NULL,
-  CONSTRAINT pk_metrica
-  PRIMARY KEY (id_metrica, fk_unidade_medida),
-  CONSTRAINT fk_metrica_unidade_medida
-    FOREIGN KEY (fk_unidade_medida)
-    REFERENCES unidade_medida (id_unidade));
-
-
-CREATE TABLE IF NOT EXISTS alerta (
-  id_alerta INT PRIMARY KEY  NOT NULL,
-  data_hora DATETIME NULL,
-  fk_componenente_alerta INT NOT NULL,
-  fk_maquina_alerta INT NOT NULL,
-  fk_empresa_alerta INT NOT NULL,
-  fk_unidade_medida_alerta INT NOT NULL,
-  CONSTRAINT fk_alerta_monitoramento
-    FOREIGN KEY (fk_componenente_alerta , fk_maquina_alerta , fk_empresa_alerta , fk_unidade_medida_alerta)
-    REFERENCES monitoramento (fk_componentes_monitoramento , fk_maquina_monitoramento , fk_empresa_monitoramento , fk_unidade_medida)
-   )
-;
-
 CREATE TABLE IF NOT EXISTS alerta (
   id_alerta INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+  tipo_alerta VARCHAR(20),
   data_hora DATETIME NULL,
   fk_componenente_alerta INT NOT NULL,
   fk_maquina_alerta INT NOT NULL,
@@ -231,37 +217,35 @@ CONSTRAINT fk_alerta_unidade_medida
     FOREIGN KEY (fk_unidade_medida_alerta)
     REFERENCES unidade_medida (id_unidade)
     );
-
+    
 DELIMITER //
-CREATE TRIGGER criarAlerta
-AFTER INSERT ON monitoramento
-FOR EACH ROW 
+CREATE TRIGGER trigger_alerta AFTER INSERT ON monitoramento FOR EACH ROW
 BEGIN
-    DECLARE id_metrica INT;
-    DECLARE n_risco DOUBLE;
-    DECLARE n_perigo DOUBLE;
+    DECLARE v_risco DOUBLE;
+    DECLARE v_perigo DOUBLE;
+    DECLARE v_unidade VARCHAR(45);
     
-    SELECT fk_metrica_componente
-	INTO id_metrica
-	FROM componente
-	WHERE NEW.fk_componentes_monitoramento = id_componente;
-
-    SELECT risco, perigo
-    INTO n_risco, n_perigo
-    FROM metrica
-    WHERE id_metrica = id_metrica;
+    -- Obtém os valores de risco, perigo e unidade de medida com base na métrica
+    SELECT m.risco, m.perigo, u.tipo_dado INTO v_risco, v_perigo, v_unidade
+    FROM metrica m
+    INNER JOIN unidade_medida u ON m.fk_unidade_medida = u.id_unidade
+    WHERE m.id_metrica = NEW.fk_metrica_componente;
     
-    IF NEW.dado_coletado >= n_risco THEN
-        INSERT INTO alerta (tipo_alerta, fkRegistro, fkRobo, dtHora)
-        VALUES ("critico", NEW.id_monitoramento, NEW.fk_maquina_monitoramento, now());
-    ELSEIF NEW.dado_coletado >= n_perigo THEN
-        INSERT INTO alerta (tipo_alerta, fkRegistro, fkRobo, dtHora)
-        VALUES ("urgente", NEW.id_monitoramento, NEW.fk_maquina_monitoramento, now());
+    -- Verifica a unidade de medida associada à métrica
+    IF v_unidade = 'MegaBytes' THEN
+        -- Transforma os dados coletados em megabytes
+        SET NEW.dado_coletado = NEW.dado_coletado / 1048576;
+    END IF;
+    
+    IF NEW.dado_coletado >= v_risco THEN
+        INSERT INTO alerta (tipo_alerta, fk_componenente_alerta, fk_maquina_alerta, fk_empresa_alerta, fk_unidade_medida_alerta, data_hora)
+        VALUES ('crítico', NEW.fk_componentes_monitoramento, NEW.fk_maquina_monitoramento, NEW.fk_empresa_monitoramento, NEW.fk_unidade_medida, NOW());
+    ELSEIF NEW.dado_coletado >= v_perigo THEN
+        INSERT INTO alerta (tipo_alerta, fk_componenente_alerta, fk_maquina_alerta, fk_empresa_alerta, fk_unidade_medida_alerta, data_hora)
+        VALUES ('urgente', NEW.fk_componentes_monitoramento, NEW.fk_maquina_monitoramento, NEW.fk_empresa_monitoramento, NEW.fk_unidade_medida, NOW());
     END IF;
 END;
+
 //
 DELIMITER ;
-
-    
-
 
