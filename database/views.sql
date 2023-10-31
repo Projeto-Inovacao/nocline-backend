@@ -57,8 +57,6 @@ WHERE
 
 select * from VW_DISCO_CHART;
 
-
-drop view VW_REDE_CHART;
 -- view REDE
 CREATE VIEW VW_REDE_CHART AS
 SELECT
@@ -130,23 +128,31 @@ create view VW_JANELAS_CHART as select nome_janela, status_abertura, fk_maquinaJ
 
 select * from VW_JANELAS_CHART;
 
-SELECT COUNT(*) as total_registros
-FROM monitoramento
-WHERE descricao = 'uso ram' AND dado_coletado > 5100;
--- selects views:
-select * from VW_CPU_CHART;
-select COUNT(*) from VW_REDE_CHART where recebidos > 81050816 AND recebidos < 250230686 ;
-select * from VW_DISCO_CHART;
-select * from VW_REDE_CHART;
-select * from janela order by data_hora desc;
+-- view alertas
+create view VW_ALERTAS_TABLE as
+SELECT
+  M.id_maquina,
+  m.ip,
+  M.hostname,
+  M.so,
+  M.setor,
+  M.modelo,
+  M.status_maquina,
+  M.fk_empresaM,
+  COUNT(DISTINCT M.id_maquina) AS qtd_maquina,
+  COUNT(CASE WHEN A.tipo_alerta = "critico" THEN A.id_alerta END) AS qtd_critico,
+  COUNT(CASE WHEN A.tipo_alerta = "risco" THEN A.id_alerta END) AS qtd_risco,
+  COUNT(CASE WHEN A.tipo_alerta IN ("critico", "risco") THEN A.id_alerta END) AS qtd_alerta_maquina,
+  COUNT(CASE WHEN A.data_hora BETWEEN DATE_SUB(LAST_DAY(SYSDATE()), INTERVAL 1 MONTH) AND LAST_DAY(SYSDATE()) THEN A.id_alerta END) AS qtd_alertas_no_mes
+FROM
+  maquina AS M
+LEFT JOIN
+  alerta AS A ON M.id_maquina = A.fk_maquina_alerta
+GROUP BY
+  M.id_maquina, M.hostname, M.ip, M.so, M.modelo, M.setor, M.status_maquina, M.fk_empresaM;
+  
+  select * from maquina;
 
-SELECT COUNT(*) as total_registros
-FROM monitoramento
-WHERE descricao = 'uso cpu' AND dado_coletado >= 1.4;
+	
 
-SELECT COUNT(*) as total_registros
-FROM monitoramento
-WHERE descricao = 'uso cpu' AND dado_coletado > 1.4 AND dado_coletado < 5.1;
 
-select * from monitoramento;
-alter table processos add primary key (pid, fk_empresaP, fk_maquinaP);

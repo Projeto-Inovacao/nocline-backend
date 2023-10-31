@@ -5,7 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c3da97eb-dd46-43a2-bb09-caf0684f9dbd" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/API-LOOCA1 - Copia/target/classes/AppCapturaKt.class" beforeDir="false" afterPath="$PROJECT_DIR$/API-LOOCA1 - Copia/target/classes/AppCapturaKt.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../API-LOOCA1/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../API-LOOCA1/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../database/nocLine_ddl.sql" beforeDir="false" afterPath="$PROJECT_DIR$/../database/nocLine_ddl.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../database/nocLine_dml.sql" beforeDir="false" afterPath="$PROJECT_DIR$/../database/nocLine_dml.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../database/views.sql" beforeDir="false" afterPath="$PROJECT_DIR$/../database/views.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../python/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/../python/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,6 +19,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 6
+}]]></component>
   <component name="ProjectId" id="2WqjADJQTuQ8xwqcObJNUJ27OPL" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -24,7 +31,10 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "C:/Users/ritad/Desktop/Faculdade/Aprendendo_Kotlin/Exercicios/projeto-livros"
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "grafico",
+    "last_opened_file_path": "C:/Users/Gisele/Documents/noicline/nocline-backend/API-LOOCA1",
+    "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RunManager">
@@ -49,7 +59,11 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1697466858290</updated>
+      <workItem from="1698720470220" duration="80000" />
     </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
 </project>
