@@ -39,12 +39,7 @@ INSERT INTO metrica (risco, perigo, fk_unidade_medida)
 VALUES (176.45, 250.23, 3);
 select * from componente;
 select * from metrica;
-
-INSERT INTO componente VALUES
-(null, 'RAM', 1, 1, 1),
-(null, 'CPU', 1, 1, 2),
-(null, 'DISCO', 1, 1, 3),
-(null, 'REDE', 1, 1, 4);
+select * from componente;
 
 INSERT INTO contrato VALUES
 (null, "2023-11-01", "2024-11-01", 0, 1480.00, "Crédito", 1, 3);
