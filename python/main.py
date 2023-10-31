@@ -49,8 +49,8 @@ while not event.is_set():
             result = mycursor.fetchone()  # Você pode usar fetchall() se houver múltiplas linhas de resultado
 
             if result:
-                id_maquina, fk_empresaM = result  # Desempacota os valores
-
+                id_maquina, fk_empresaM = result
+                
                 sql_query = """
                 INSERT INTO Monitoramento (dado_coletado, data_hora, descricao, fk_componentes_monitoramento, fk_maquina_monitoramento, fk_empresa_monitoramento, fk_unidade_medida)
                 VALUES (%s, now(), 'uso cpu', 1, %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = '%')),
@@ -59,7 +59,12 @@ while not event.is_set():
                        (%s, now(), 'memoria disponivel', 3, %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = 'B')),
                        (%s, now(), 'memoria total', 3, %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = 'B'));
                 """
-                val = [cpu_percentual, id_maquina, fk_empresaM, disco_livre, id_maquina, fk_empresaM, disco_total, id_maquina, fk_empresaM, memoria_disponivel, id_maquina, fk_empresaM, memoria_total, id_maquina, fk_empresaM]
+                val = [cpu_percentual, id_maquina, id_maquina, fk_empresaM, '%',
+                       disco_livre, id_maquina, id_maquina, fk_empresaM, 'B',
+                       disco_total, id_maquina, id_maquina, fk_empresaM, 'B',
+                       memoria_disponivel, id_maquina, id_maquina, fk_empresaM, 'B',
+                       memoria_total, id_maquina, id_maquina, fk_empresaM, 'B']
+                
                 mycursor.execute(sql_query, val)
                 mydb.commit()  # Se tudo estiver OK, aqui ele dá o INSERT no banco
                 print(mycursor.rowcount, "registros inseridos no banco")  # Este rowcount fala o número de registros inseridos de uma vez

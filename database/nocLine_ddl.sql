@@ -21,7 +21,6 @@ CREATE TABLE IF NOT EXISTS colaborador (
   email VARCHAR(250) NULL UNIQUE,
   celular CHAR(13) NULL,
   senha VARCHAR(255) NULL,
-  status_colaborador tinyint,
   fk_empresa INT NOT NULL,
   fk_nivel_acesso INT NOT NULL,
   CONSTRAINT pk_colaborador
@@ -95,7 +94,6 @@ CREATE TABLE IF NOT EXISTS maquina (
   hostname VARCHAR(100) NOT NULL,
   modelo VARCHAR(45) NULL,
   setor CHAR(3) NULL,
-  status_maquina tinyint,
   fk_empresaM INT NOT NULL,
   CONSTRAINT pk_maquina
     PRIMARY KEY (id_maquina, fk_empresaM),
@@ -153,8 +151,8 @@ CREATE TABLE IF NOT EXISTS processos (
 
 CREATE TABLE IF NOT EXISTS metrica (
   id_metrica INT AUTO_INCREMENT NOT NULL,
-  dado_coletado DOUBLE NOT NULL,
-  tipo_alerta DOUBLE NOT NULL ,
+  risco DOUBLE NULL,
+  perigo DOUBLE NULL,
   fk_unidade_medida INT NOT NULL,
   CONSTRAINT pk_metrica
   PRIMARY KEY (id_metrica, fk_unidade_medida),
@@ -177,8 +175,6 @@ CREATE TABLE IF NOT EXISTS componente (
     FOREIGN KEY (fk_metrica_componente)
     REFERENCES metrica (id_metrica)
 );
-
- 
   
 CREATE TABLE IF NOT EXISTS monitoramento (
   id_monitoramento INT NOT NULL AUTO_INCREMENT,
@@ -201,9 +197,9 @@ CREATE TABLE IF NOT EXISTS monitoramento (
 
 CREATE TABLE IF NOT EXISTS alerta (
   id_alerta INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+  dado_coletado DOUBLE NOT NULL,
   tipo_alerta VARCHAR(20),
   data_hora DATETIME NULL,
-  dado_coletado DOUBLE,
   fk_componenente_alerta INT NOT NULL,
   fk_maquina_alerta INT NOT NULL,
   fk_empresa_alerta INT NOT NULL,
@@ -221,28 +217,38 @@ CONSTRAINT fk_alerta_unidade_medida
     FOREIGN KEY (fk_unidade_medida_alerta)
     REFERENCES unidade_medida (id_unidade)
     );
+select * from alerta;
 
 DELIMITER //
 CREATE TRIGGER trigger_alerta AFTER INSERT ON monitoramento FOR EACH ROW
 BEGIN
-	DECLARE v_metrica INT;
+    DECLARE v_metrica INT;
     DECLARE v_risco DOUBLE;
     DECLARE v_perigo DOUBLE;
+    DECLARE v_nome_componente VARCHAR(45);
     DECLARE v_dado_coletado DOUBLE;
-    DECLARE v_nome_componente varchar(45);
 
-	select fk_metrica_componente, nome_componente from componente where new.fk_componentes_monitoramento = id_componente into v_metrica, v_nome_componente;
-    
-    select risco, perigo into v_risco, v_perigo from metrica where id_metrica = v_metrica;
-    
-    IF NEW.dado_coletado >= v_risco THEN
-        INSERT INTO alerta (tipo_alerta, fk_componenente_alerta, fk_maquina_alerta, fk_empresa_alerta, fk_unidade_medida_alerta, data_hora)
-        VALUES ('risco', NEW.fk_componentes_monitoramento, NEW.fk_maquina_monitoramento, NEW.fk_empresa_monitoramento, NEW.fk_unidade_medida, NOW());
-    ELSEIF NEW.dado_coletado >= v_perigo THEN
-        INSERT INTO alerta (tipo_alerta, fk_componenente_alerta, fk_maquina_alerta, fk_empresa_alerta, fk_unidade_medida_alerta, data_hora)
-        VALUES ('perigo', NEW.fk_componentes_monitoramento, NEW.fk_maquina_monitoramento, NEW.fk_empresa_monitoramento, NEW.fk_unidade_medida, NOW());
+    SELECT NEW.dado_coletado
+    INTO v_dado_coletado;
+
+    SELECT c.fk_metrica_componente, c.nome_componente
+    INTO v_metrica, v_nome_componente
+    FROM componente as c
+    WHERE c.id_componente = NEW.fk_componentes_monitoramento;
+
+    SELECT m.risco, m.perigo
+    INTO v_risco, v_perigo
+    FROM metrica m
+    WHERE m.id_metrica = v_metrica;
+
+    IF v_dado_coletado >= v_risco THEN
+     INSERT INTO alerta (tipo_alerta, dado_coletado, fk_componenente_alerta, fk_maquina_alerta, fk_empresa_alerta, fk_unidade_medida_alerta, data_hora)
+        VALUES ('perigo', v_dado_coletado, NEW.fk_componentes_monitoramento, NEW.fk_maquina_monitoramento, NEW.fk_empresa_monitoramento, NEW.fk_unidade_medida, NOW());
+    ELSEIF v_dado_coletado >= v_perigo THEN
+        INSERT INTO alerta (tipo_alerta, dado_coletado, fk_componenente_alerta, fk_maquina_alerta, fk_empresa_alerta, fk_unidade_medida_alerta, data_hora)
+        VALUES ('risco', v_dado_coletado, NEW.fk_componentes_monitoramento, NEW.fk_maquina_monitoramento, NEW.fk_empresa_monitoramento, NEW.fk_unidade_medida, NOW());
     END IF;
 END;
-
 //
 DELIMITER ;
+
