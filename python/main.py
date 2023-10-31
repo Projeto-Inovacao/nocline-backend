@@ -50,12 +50,6 @@ while not event.is_set():
             if result:
                 id_maquina, fk_empresaM = result
                 
-                val = [cpu_percentual, id_maquina, id_maquina, fk_empresaM, '%',
-                       disco_livre, id_maquina, id_maquina, fk_empresaM, 'B',
-                       disco_total, id_maquina, id_maquina, fk_empresaM, 'B',
-                       memoria_disponivel, id_maquina, id_maquina, fk_empresaM, 'B',
-                       memoria_total, id_maquina, id_maquina, fk_empresaM, 'B']
-                
                 sql_query = """
                 INSERT INTO Monitoramento (dado_coletado, data_hora, descricao, fk_componentes_monitoramento, fk_maquina_monitoramento, fk_empresa_monitoramento, fk_unidade_medida)
                 VALUES (%s, now(), 'uso cpu', (SELECT id_componente from componente WHERE nome_componente = 'CPU' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s)),
@@ -64,6 +58,12 @@ while not event.is_set():
                        (%s, now(), 'memoria disponivel', (SELECT id_componente from componente WHERE nome_componente = 'RAM' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s)),
                        (%s, now(), 'memoria total', (SELECT id_componente from componente WHERE nome_componente = 'RAM' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s));
                 """
+                val = [cpu_percentual, id_maquina, id_maquina, fk_empresaM, '%',
+                       disco_livre, id_maquina, id_maquina, fk_empresaM, 'B',
+                       disco_total, id_maquina, id_maquina, fk_empresaM, 'B',
+                       memoria_disponivel, id_maquina, id_maquina, fk_empresaM, 'B',
+                       memoria_total, id_maquina, id_maquina, fk_empresaM, 'B']
+                
                 mycursor.execute(sql_query, val)
                 mydb.commit()
                 print(mycursor.rowcount, "registros inseridos no banco")

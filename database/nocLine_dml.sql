@@ -1,10 +1,56 @@
 /* INSERTS OBRIGATÓRIOS PARA O FUNCIONAMENTO DO PROGRAMA ! */
 USE nocLine;
-select * from plano;
 INSERT INTO plano VALUES 
 (null, "Essentials", 10, 1230.00, 15.38), 
 (null, "Master", 25, 1340.00, 12.16), 
 (null, "Plus", 50, 1480.00, 10.55);
+
+-- tabela nivel de acesso
+INSERT INTO nivel_acesso VALUES
+(null, 'RPL', 'Representante Legal'),
+(null, 'SSO', 'Sala de Supervisão Opercional'),
+(null, 'CCO', 'Centro de Controle Operacioal');
+SELECT * FROM nivel_acesso;
+
+-- tabela unidade de medida
+INSERT INTO unidade_medida VALUES
+(null, 'Bytes', 'B'),
+(null, 'Porcentagem', '%'),
+(null, 'MegaBytes', 'MB');
+
+-- metrica para a RAM
+INSERT INTO metrica (risco, perigo, fk_unidade_medida)
+VALUES (88.43, 90.71, 2);
+
+-- metrica de cpu
+INSERT INTO metrica (risco, perigo, fk_unidade_medida)
+VALUES (4.04, 5.1, 2);
+
+-- metrica de disco
+INSERT INTO metrica (risco, perigo, fk_unidade_medida)
+VALUES (50.96, 50.99, 2);
+
+-- metrica de disco
+INSERT INTO metrica (risco, perigo, fk_unidade_medida)
+VALUES (50.96, 50.99, 2);
+
+-- metrica de rede
+INSERT INTO metrica (risco, perigo, fk_unidade_medida)
+VALUES (176.45, 250.23, 3);
+select * from componente;
+select * from metrica;
+
+INSERT INTO componente VALUES
+(null, 'RAM', 1, 1, 1),
+(null, 'CPU', 1, 1, 2),
+(null, 'DISCO', 1, 1, 3),
+(null, 'REDE', 1, 1, 4);
+
+INSERT INTO contrato VALUES
+(null, "2023-11-01", "2024-11-01", 0, 1480.00, "Crédito", 1, 3);
+
+/*
+
 select * from contrato;
  alter table contrato modify column id_contrato int auto_increment;
 INSERT INTO contrato VALUES
@@ -23,14 +69,6 @@ alter table endereco modify column cidade varchar(200);
 select * from maquina;
 update maquina set ip = '131.72.61.67' where id_maquina = 2;
 
-
--- tabela nivel de acesso
-INSERT INTO nivel_acesso VALUES
-(null, 'RPL', 'Representante Legal'),
-(null, 'SSO', 'Sala de Supervisão Opercional'),
-(null, 'CCO', 'Centro de Controle Operacioal');
-SELECT * FROM nivel_acesso;
-
 -- tabela colaborador
 INSERT INTO colaborador VALUES (null, 'Nome Colaborador Exemplo', '123.456.789-01', 'no@email.com', '12-34567-8901', 'senha321', 1, 1);
 SELECT * FROM colaborador;
@@ -38,12 +76,6 @@ SELECT * FROM colaborador;
 -- tabela endereco
 INSERT INTO endereco VALUES (null, '12345-678', 123, 'Rua Exemplo', 'Bairro Exemplo', 'Cidade Exemplo', 'Estado Exemplo', 'Pais Exemplo', 'Complemento Exemplo',1);
 SELECT * FROM endereco;
-
--- tabela unidade de medida
-INSERT INTO unidade_medida VALUES
-(null, 'Bytes', 'B'),
-(null, 'Porcentagem', '%'),
-(null, 'MegaBytes', 'MB');
 
 -- tabela maquina
 INSERT INTO maquina VALUES (null, '177.181.7.16', 'Windows', 'DESKTOP-67VH7K5', 'Modelo Exemplo', 'CCO', 1);
@@ -90,26 +122,6 @@ select
 FROM monitoramento
 WHERE descricao = 'uso ram' AND dado_coletado > 5100;
 
--- metrica para a RAM
-INSERT INTO metrica (risco, perigo, fk_unidade_medida)
-VALUES (88.43, 90.71, 2);
-
--- metrica de cpu
-INSERT INTO metrica (risco, perigo, fk_unidade_medida)
-VALUES (4.04, 5.1, 2);
-
--- metrica de disco
-INSERT INTO metrica (risco, perigo, fk_unidade_medida)
-VALUES (50.96, 50.99, 2);
-
--- metrica de disco
-INSERT INTO metrica (risco, perigo, fk_unidade_medida)
-VALUES (50.96, 50.99, 2);
-
--- metrica de rede
-INSERT INTO metrica (risco, perigo, fk_unidade_medida)
-VALUES (176.45, 250.23, 2);
-
 select * from componente;
 alter table componente add column fk_metrica_componente int;
 alter table componente add CONSTRAINT fk_componente_metrica
@@ -119,3 +131,4 @@ alter table componente add CONSTRAINT fk_componente_metrica
 select * from alerta;
 select * from monitoramento;
 insert into monitoramento values(null, 19.0, now(), 'uso cpu', 1, 1, 1, 2);
+*/
