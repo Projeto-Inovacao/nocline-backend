@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS colaborador (
   email VARCHAR(250) NULL UNIQUE,
   celular CHAR(13) NULL,
   senha VARCHAR(255) NULL,
+  status_colaborador tinyint,
   fk_empresa INT NOT NULL,
   fk_nivel_acesso INT NOT NULL,
   CONSTRAINT pk_colaborador
@@ -94,6 +95,7 @@ CREATE TABLE IF NOT EXISTS maquina (
   hostname VARCHAR(100) NOT NULL,
   modelo VARCHAR(45) NULL,
   setor CHAR(3) NULL,
+  status_maquina tinyint,
   fk_empresaM INT NOT NULL,
   CONSTRAINT pk_maquina
     PRIMARY KEY (id_maquina, fk_empresaM),

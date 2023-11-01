@@ -40,9 +40,10 @@ VALUES (176.45, 250.23, 3);
 select * from componente;
 select * from metrica;
 select * from componente;
-
-INSERT INTO contrato VALUES
-(null, "2023-11-01", "2024-11-01", 0, 1480.00, "Crédito", 1, 3);
+select * from alerta;
+select * from VW_CPU_CHART;
+-- INSERT INTO contrato VALUES
+-- (null, "2023-11-01", "2024-11-01", 0, 1480.00, "Crédito", 1, 3);
 
 /*
 

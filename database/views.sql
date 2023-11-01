@@ -1,6 +1,12 @@
 use nocline;
 
- 
+select * from VW_CPU_CHART;
+select * from VW_RAM_CHART;
+select * from VW_DISCO_CHART;
+select * from VW_REDE_CHART;
+select * from VW_JANELAS_CHART;
+select * from VW_ALERTAS_TABLE;
+
 -- view CPU
 CREATE VIEW VW_CPU_CHART AS
 SELECT dado_coletado, Representacao, DATE_FORMAT(data_hora, "%H:%i:%s") as data_hora, nome_componente, descricao, id_maquina, hostname, razao_social
@@ -9,8 +15,6 @@ JOIN unidade_medida ON fk_unidade_medida = id_unidade
 JOIN componente ON fk_componentes_monitoramento = id_componente
 JOIN maquina as M on fk_maquina_monitoramento = M.id_maquina
 JOIN empresa on M.fk_empresaM = empresa.id_empresa WHERE nome_componente = 'CPU';
-
-select * from VW_CPU_CHART;
 
 -- view RAM
 CREATE VIEW VW_RAM_CHART AS
@@ -31,8 +35,6 @@ JOIN empresa ON M.fk_empresaM = empresa.id_empresa
 WHERE componente.nome_componente = 'RAM'
   AND M2.descricao = 'memoria total'
   AND M1.descricao = 'memoria disponivel';
-
-select * from VW_RAM_CHART;
 
 -- view DISCO
 CREATE VIEW VW_DISCO_CHART AS  
@@ -55,8 +57,6 @@ WHERE
   M1.descricao = "disco livre"
   AND M2.descricao = "disco total";
 
-select * from VW_DISCO_CHART;
-
 -- view REDE
 CREATE VIEW VW_REDE_CHART AS
 SELECT
@@ -73,8 +73,6 @@ JOIN maquina ON monitoramento.fk_maquina_monitoramento = maquina.id_maquina
 JOIN empresa ON maquina.fk_empresaM = empresa.id_empresa
 WHERE componente.nome_componente = 'REDE'
 GROUP BY monitoramento.data_hora, componente.nome_componente, componente.fk_maquina_componente;
-
-select * from VW_REDE_CHART;
 
 -- view gráfico de barra dash
 CREATE VIEW VW_DESEMPENHO_CHART AS
@@ -126,11 +124,9 @@ WHERE D.rn = 1;
 -- view janelas
 create view VW_JANELAS_CHART as select nome_janela, status_abertura, fk_maquinaJ, fk_empresaJ from janela;
 
-select * from VW_JANELAS_CHART;
-
 -- view alertas
 create view VW_ALERTAS_TABLE as
-SELECT
+select
   M.id_maquina,
   m.ip,
   M.hostname,
@@ -140,9 +136,9 @@ SELECT
   M.status_maquina,
   M.fk_empresaM,
   COUNT(DISTINCT M.id_maquina) AS qtd_maquina,
-  COUNT(CASE WHEN A.tipo_alerta = "critico" THEN A.id_alerta END) AS qtd_critico,
+  COUNT(CASE WHEN A.tipo_alerta = "perigo" THEN A.id_alerta END) AS qtd_perigo,
   COUNT(CASE WHEN A.tipo_alerta = "risco" THEN A.id_alerta END) AS qtd_risco,
-  COUNT(CASE WHEN A.tipo_alerta IN ("critico", "risco") THEN A.id_alerta END) AS qtd_alerta_maquina,
+  COUNT(CASE WHEN A.tipo_alerta IN ("perigo", "risco") THEN A.id_alerta END) AS qtd_alerta_maquina,
   COUNT(CASE WHEN A.data_hora BETWEEN DATE_SUB(LAST_DAY(SYSDATE()), INTERVAL 1 MONTH) AND LAST_DAY(SYSDATE()) THEN A.id_alerta END) AS qtd_alertas_no_mes
 FROM
   maquina AS M
@@ -150,9 +146,4 @@ LEFT JOIN
   alerta AS A ON M.id_maquina = A.fk_maquina_alerta
 GROUP BY
   M.id_maquina, M.hostname, M.ip, M.so, M.modelo, M.setor, M.status_maquina, M.fk_empresaM;
-  
-  select * from maquina;
-
-	
-
 
