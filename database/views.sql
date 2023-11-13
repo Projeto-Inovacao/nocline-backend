@@ -3,11 +3,12 @@ use nocline;
 -- TESTES
 select * from monitoramento where descricao = "uso de cpu kt" order by data_hora desc;
 select * from monitoramento where descricao = "temperatura cpu" order by data_hora desc;
+select * from monitoramento order by data_hora desc;
 
 -- SELECTS DE TODAS AS VIEWS
 select * from VW_CPU_CHART;
 select * from VW_CPU_KOTLIN_CHART;
-select * from VW_RAM_CHART;
+select * from VW_RAM_CHART order by data_hora desc;
 select * from VW_DISCO_CHART;
 select * from VW_REDE_CHART;
 select * from VW_JANELAS_CHART;
@@ -15,6 +16,8 @@ select * from VW_ALERTAS_TABLE;
 select * from VW_TEMP_CHART;
 select * from VW_DESEMPENHO_CHART;
 select * from VW_TEMPXCPU_CHART;
+select * from VW_DESEMPENHO_CHART_TEMP;
+
 
 -- view CPU - py
 CREATE VIEW VW_CPU_CHART AS
@@ -165,7 +168,7 @@ LEFT JOIN
 GROUP BY
   M.id_maquina, M.hostname, M.ip, M.so, M.modelo, M.setor, M.status_maquina, M.fk_empresaM;
 
-
+-- view grupo
 CREATE VIEW VW_DESEMPENHO_CHART AS
 SELECT
     data_hora AS data_hora,
@@ -227,6 +230,53 @@ FROM (
 ) AS T
 WHERE T.rn = 1;
 
+
+-- view individual gyu
+CREATE VIEW VW_DESEMPENHO_CHART_TEMP AS
+SELECT
+    data_hora AS data_hora,
+    'CPU' AS recurso,
+    id_maquina AS id_maquina,
+    dado_coletado AS uso
+FROM (
+    SELECT
+        data_hora,
+        id_maquina,
+        dado_coletado,
+        ROW_NUMBER() OVER (PARTITION BY id_maquina ORDER BY data_hora DESC) AS rn
+    FROM VW_CPU_KOTLIN_CHART
+) AS C
+WHERE C.rn = 1
+UNION ALL
+SELECT
+    data_hora AS data_hora,
+    'RAM' AS recurso,
+    id_maquina AS id_maquina,
+    usado AS uso
+FROM (
+    SELECT
+        data_hora,
+        id_maquina,
+        usado,
+        ROW_NUMBER() OVER (PARTITION BY id_maquina ORDER BY data_hora DESC) AS rn
+    FROM VW_RAM_CHART
+) AS R
+WHERE R.rn = 1
+UNION ALL
+SELECT
+    data_hora AS data_hora,
+    'TEMPERATURA' AS recurso,
+    id_maquina AS id_maquina,
+    dado_coletado AS uso
+FROM (
+    SELECT
+        data_hora,
+        id_maquina,
+        dado_coletado,
+        ROW_NUMBER() OVER (PARTITION BY id_maquina ORDER BY data_hora DESC) AS rn
+    FROM VW_TEMP_CHART
+) AS T
+WHERE T.rn = 1;
 
 -- view projeto individual- gyu
 CREATE VIEW VW_TEMPXCPU_CHART AS
