@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS colaborador (
   email VARCHAR(250) NULL UNIQUE,
   celular CHAR(13) NULL,
   senha VARCHAR(255) NULL,
-  status_colaborador TINYINT,
+  status_colaborador tinyint,
   fk_empresa INT NOT NULL,
   fk_nivel_acesso INT NOT NULL,
   CONSTRAINT pk_colaborador
@@ -38,9 +38,9 @@ CREATE TABLE IF NOT EXISTS endereco (
   id_endereco INT NOT NULL AUTO_INCREMENT,
   cep CHAR(9) NOT NULL,
   num INT NOT NULL,
-  rua VARCHAR(100) NULL,
-  bairro VARCHAR(100) NULL,
-  cidade VARCHAR(100) NULL,
+  rua VARCHAR(200) NULL,
+  bairro VARCHAR(200) NULL,
+  cidade VARCHAR(200) NULL,
   estado VARCHAR(80) NULL,
   pais VARCHAR(80) NULL,
   complemento VARCHAR(150) NULL,
@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS plano (
 );
 
 CREATE TABLE IF NOT EXISTS contrato (
-  id_contrato INT NOT NULL,
+  id_contrato INT NOT NULL auto_increment,
   data_inicio DATE NULL,
   data_termino DATE NULL,
   qtd_maq_add INT NULL,
@@ -88,6 +88,18 @@ CREATE TABLE IF NOT EXISTS contrato (
     REFERENCES plano (id_plano)
 );
 
+CREATE TABLE IF NOT EXISTS linha (
+  id_linha INT NOT NULL AUTO_INCREMENT,
+  nome VARCHAR(45) NULL,
+  numero INT NULL,
+  fk_empresaL INT NOT NULL,
+  CONSTRAINT pk_linha
+   PRIMARY KEY (id_linha, fk_empresaL),
+  CONSTRAINT fk_linha_empresa
+    FOREIGN KEY (fk_empresaL)
+    REFERENCES empresa (id_empresa)
+);
+
 CREATE TABLE IF NOT EXISTS maquina (
   id_maquina INT NOT NULL AUTO_INCREMENT,
   ip VARCHAR(20) NULL,
@@ -95,13 +107,17 @@ CREATE TABLE IF NOT EXISTS maquina (
   hostname VARCHAR(100) NOT NULL,
   modelo VARCHAR(45) NULL,
   setor CHAR(3) NULL,
-  status_maquina TINYINT,
+  status_maquina tinyint,
   fk_empresaM INT NOT NULL,
+  fk_linhaM INT NOT NULL,
   CONSTRAINT pk_maquina
     PRIMARY KEY (id_maquina, fk_empresaM),
   CONSTRAINT fk_maquina_empresa
     FOREIGN KEY (fk_empresaM)
-    REFERENCES empresa (id_empresa)
+    REFERENCES empresa (id_empresa),
+  CONSTRAINT fk_linha_maquina
+    FOREIGN KEY (fk_linhaM)
+    REFERENCES linha (id_linha)
 );
 
 CREATE TABLE IF NOT EXISTS controle_acesso (
@@ -219,7 +235,6 @@ CONSTRAINT fk_alerta_unidade_medida
     FOREIGN KEY (fk_unidade_medida_alerta)
     REFERENCES unidade_medida (id_unidade)
     );
-select * from alerta;
 
 DELIMITER //
 CREATE TRIGGER trigger_alerta AFTER INSERT ON monitoramento FOR EACH ROW

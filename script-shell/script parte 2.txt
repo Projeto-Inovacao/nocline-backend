@@ -35,19 +35,8 @@ if [ $? = 0 ];
 		echo "[Assistente NocLine]: Java instalado!"
 		sleep 5
 		echo "[Assistente Nocline]: Agora daremos início ao processo de abertura do NmonVisualizer."
-                sudo apt install zip
 		sleep 2
-		curl -s "https://get.sdkman.io" | bash
-		sleep 2
-		source "/home/urubu100/.sdkman/bin/sdkman-init.sh"
-		sleep 2
-		echo "[Assistente Nocline]: Primeiro, estamos atualizando a versão do Java adequada para execução de aplicativos Java."
-		sleep 5
-		sudo apt update
-		echo "[Assistente Nocline]: E agora instalaremos a versão do java adequada para o desenvolvimento de aplicativos Java, a qual faz o NmonVisualizer nos fornecer as informações que desejamos."
-		sleep 5
-		sdk install java 8.0.282.j9-adpt
-		sleep 2
+		echo "[Assistente Nocline]: Abriremos a pasta NmonVisualizer, para nos fornecer as informações que desejamos."
 		cd NmonVisualizer
 		sleep 2
 		echo "[Assistente Nocline]: Finalizando todo o processo... Espero que tenha gostado da experiência até aqui!"

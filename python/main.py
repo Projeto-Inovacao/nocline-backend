@@ -34,7 +34,7 @@ while not event.is_set():
     memoria_disponivel = memoria.available
     memoria_total = memoria.total
 
-    mydb = mysql.connector.connect(host='localhost', user=usr, password=pswd, database='nocLine')
+    mydb = mysql.connector.connect(host='44.203.117.244', user='root', password='urubu100', database='nocline')
     
     try:
         if mydb.is_connected():
@@ -51,7 +51,7 @@ while not event.is_set():
                 id_maquina, fk_empresaM = result
                 
                 sql_query = """
-                INSERT INTO Monitoramento (dado_coletado, data_hora, descricao, fk_componentes_monitoramento, fk_maquina_monitoramento, fk_empresa_monitoramento, fk_unidade_medida)
+                INSERT INTO monitoramento (dado_coletado, data_hora, descricao, fk_componentes_monitoramento, fk_maquina_monitoramento, fk_empresa_monitoramento, fk_unidade_medida)
                 VALUES (%s, now(), 'uso cpu', (SELECT id_componente from componente WHERE nome_componente = 'CPU' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s)),
                        (%s, now(), 'disco livre', (SELECT id_componente from componente WHERE nome_componente = 'DISCO' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s)),
                        (%s, now(), 'disco total', (SELECT id_componente from componente WHERE nome_componente = 'DISCO' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s)),
@@ -79,4 +79,3 @@ while not event.is_set():
             mycursor.close()
             mydb.close()
             time.sleep(5)
-
