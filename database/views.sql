@@ -132,7 +132,7 @@ select * from VW_JANELAS_CHART;
 create view VW_ALERTAS_TABLE as
 SELECT
   M.id_maquina,
-  m.ip,
+  M.ip,
   M.hostname,
   M.so,
   M.setor,
