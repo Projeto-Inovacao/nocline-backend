@@ -7,13 +7,13 @@ select * from monitoramento order by data_hora desc;
 
 -- SELECTS DE TODAS AS VIEWS
 select * from VW_CPU_CHART;
-select * from VW_CPU_KOTLIN_CHART;
+select * from VW_CPU_KOTLIN_CHART order by data_hora desc limit 5;
 select * from VW_RAM_CHART order by data_hora desc;
 select * from VW_DISCO_CHART;
 select * from VW_REDE_CHART;
 select * from VW_JANELAS_CHART;
 select * from VW_ALERTAS_TABLE;
-select * from VW_TEMP_CHART;
+select * from VW_TEMP_CHART order by data_hora desc limit 5;
 select * from VW_DESEMPENHO_CHART;
 select * from VW_TEMPXCPU_CHART;
 select * from VW_DESEMPENHO_CHART_TEMP;
@@ -47,6 +47,7 @@ SELECT
     nome_componente,
     descricao,
     id_maquina,
+    empresa.id_empresa,
     hostname,
     razao_social
 FROM
@@ -298,6 +299,8 @@ WHERE
     AND monitoramento.descricao IN ('uso de cpu kt', 'temperatura cpu')
 GROUP BY
     DATE_FORMAT(monitoramento.data_hora, "%Y-%m-%d %H:%i:%s"), componente.nome_componente, componente.fk_maquina_componente;
+
+
 
 
 
