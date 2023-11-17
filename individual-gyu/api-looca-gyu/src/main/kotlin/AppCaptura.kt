@@ -41,6 +41,7 @@ fun main() {
             val novaCpu = repositorio.capturarDadosCpu(looca)
             repositorio.cadastrarCpu(novaCpu, id_maquina, fk_empresa )
 
+
             TimeUnit.SECONDS.sleep(32)
         }
     } else {

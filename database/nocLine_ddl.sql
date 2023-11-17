@@ -2,6 +2,7 @@
 CREATE DATABASE nocline;
 USE nocline;
 
+
 CREATE TABLE IF NOT EXISTS empresa(
   id_empresa INT PRIMARY KEY NOT NULL AUTO_INCREMENT, 
   razao_social VARCHAR(150) NOT NULL,
@@ -148,9 +149,11 @@ CREATE TABLE IF NOT EXISTS janela (
     FOREIGN KEY (fk_maquinaJ, fk_empresaJ)
     REFERENCES maquina (id_maquina, fk_empresaM)
 );
+-- alter table processos add column nome_processo varchar(200) after pid;
 
 CREATE TABLE IF NOT EXISTS processos (
   pid INT PRIMARY KEY NOT NULL,
+  nome_processo varchar(200),
   uso_cpu DOUBLE NULL,
   uso_memoria DOUBLE NULL,
   memoria_virtual DOUBLE NULL,
@@ -187,6 +190,7 @@ CREATE TABLE IF NOT EXISTS componente (
   fabricante VARCHAR(200) NULL,
   identificador VARCHAR(200) NULL,
   frequencia INT NULL,
+  microarquitetura varchar(200) NULL,
   fk_maquina_componente INT NOT NULL,
   fk_empresa_componente INT NOT NULL,
   fk_metrica_componente INT NOT NULL,

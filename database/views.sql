@@ -1,7 +1,7 @@
 use nocline;
 
 -- TESTES
-select * from monitoramento where descricao = "uso de cpu kt" order by data_hora desc;
+select * from monitoramento where descricao = "uso de cpu py" order by data_hora desc;
 select * from monitoramento where descricao = "temperatura cpu" order by data_hora desc;
 select * from monitoramento order by data_hora desc;
 
