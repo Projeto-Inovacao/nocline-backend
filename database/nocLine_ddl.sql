@@ -2,6 +2,11 @@
 CREATE DATABASE nocline;
 USE nocline;
 
+select*from unidade_medida;
+
+update maquina set hostname = "miguel-mecanicas" where id_maquina = 2;
+select*from monitoramento;
+
 CREATE TABLE IF NOT EXISTS empresa(
   id_empresa INT PRIMARY KEY NOT NULL AUTO_INCREMENT, 
   razao_social VARCHAR(150) NOT NULL,
