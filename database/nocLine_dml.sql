@@ -94,7 +94,7 @@ SELECT * FROM metrica;
 INSERT INTO metrica (risco, perigo, fk_unidade_medida)
 VALUES (176.45, 250.23, 3);
 
-
+SELECT * FROM monitoramento;
 -- alguns delete que eu precisei (gyu)
 -- DELETE FROM alerta WHERE fk_componenente_alerta >= 1 AND fk_componenente_alerta <= 8400;
 -- DELETE FROM monitoramento WHERE id_monitoramento >= 1 AND id_monitoramento <= 8400;

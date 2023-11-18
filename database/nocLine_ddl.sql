@@ -2,11 +2,6 @@
 CREATE DATABASE nocline;
 USE nocline;
 
-select*from unidade_medida;
-
-update maquina set hostname = "miguel-mecanicas" where id_maquina = 2;
-select*from monitoramento;
-
 CREATE TABLE IF NOT EXISTS empresa(
   id_empresa INT PRIMARY KEY NOT NULL AUTO_INCREMENT, 
   razao_social VARCHAR(150) NOT NULL,
@@ -146,19 +141,24 @@ CREATE TABLE IF NOT EXISTS janela (
   nome_janela VARCHAR(150) NULL,
   status_abertura TINYINT NULL,
   data_hora DATETIME NULL,
+  valor_negocio tinyint NULL,
   fk_maquinaJ INT NOT NULL,
   fk_empresaJ INT NOT NULL,
   CONSTRAINT fk_maq_empJ
     FOREIGN KEY (fk_maquinaJ, fk_empresaJ)
     REFERENCES maquina (id_maquina, fk_empresaM)
 );
+-- alter table processos add column nome_processo varchar(200) after pid;
 
 CREATE TABLE IF NOT EXISTS processos (
   pid INT PRIMARY KEY NOT NULL,
+  nome_processo varchar(200),
   uso_cpu DOUBLE NULL,
   uso_memoria DOUBLE NULL,
   memoria_virtual DOUBLE NULL,
   status_abertura TINYINT NULL,
+  gravacao_disco double NULL, 
+  temp_execucao double NULL, 
   fk_maquinaP INT NOT NULL,
   fk_empresaP INT NOT NULL,
   CONSTRAINT fk_maq_empP
@@ -186,6 +186,10 @@ CREATE TABLE IF NOT EXISTS metrica (
 CREATE TABLE IF NOT EXISTS componente (
   id_componente INT NOT NULL AUTO_INCREMENT,
   nome_componente VARCHAR(45) NULL,
+  fabricante VARCHAR(200) NULL,
+  identificador VARCHAR(200) NULL,
+  frequencia INT NULL,
+  microarquitetura varchar(200) NULL,
   fk_maquina_componente INT NOT NULL,
   fk_empresa_componente INT NOT NULL,
   fk_metrica_componente INT NOT NULL,
@@ -198,7 +202,7 @@ CREATE TABLE IF NOT EXISTS componente (
     FOREIGN KEY (fk_metrica_componente)
     REFERENCES metrica (id_metrica)
 );
-  
+
 CREATE TABLE IF NOT EXISTS monitoramento (
   id_monitoramento INT NOT NULL AUTO_INCREMENT,
   dado_coletado DOUBLE NOT NULL,
