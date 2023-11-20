@@ -52,14 +52,6 @@ INSERT INTO maquina VALUES
 (null, '131.72.61.67', 'Windows', 'gyulia_piqueira', 'Samsung', 'CCO', 1, 1, 1);
 SELECT * FROM maquina;
 
--- INSERIR NA TABELA COMPONENTE
-INSERT INTO componente VALUES
-(null, 'RAM', 1, 1, 1),
-(null, 'CPU', 1, 1, 2),
-(null, 'DISCO', 1, 1, 3),
-(null, 'REDE', 1, 1, 4);
-SELECT * FROM componente;
-
 -- INSERIR NA TABELA UNIDADE DE MEDIDA
 INSERT INTO unidade_medida VALUES
 (null, 'Bytes', 'B'),
@@ -67,6 +59,7 @@ INSERT INTO unidade_medida VALUES
 (null, 'MegaBytes', 'MB'), 
 (null, "Graus Celsius", "°C"); 
 SELECT * FROM unidade_medida;
+
 
 select * from metrica;
 
@@ -93,6 +86,17 @@ SELECT * FROM metrica;
 -- metrica de rede
 INSERT INTO metrica (risco, perigo, fk_unidade_medida)
 VALUES (176.45, 250.23, 3);
+
+-- INSERIR NA TABELA COMPONENTE
+INSERT INTO componente (id_componente,nome_componente,fk_maquina_componente,fk_empresa_componente,fk_metrica_componente) VALUES
+(null, 'RAM', 1, 1, 1),
+(null, 'CPU', 1, 1, 2),
+(null, 'DISCO', 1, 1, 3),
+(null, 'REDE', 1, 1, 4);
+SELECT * FROM componente;
+
+
+select*from processos;
 
 SELECT * FROM monitoramento;
 -- alguns delete que eu precisei (gyu)
