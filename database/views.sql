@@ -299,7 +299,69 @@ WHERE
     AND monitoramento.descricao IN ('uso de cpu kt', 'temperatura cpu')
 GROUP BY
     DATE_FORMAT(monitoramento.data_hora, "%Y-%m-%d %H:%i:%s"), componente.nome_componente, componente.fk_maquina_componente;
+use nocline;
 
+-- Luize individual--
+Create view  VW_MEDIA_RAM_POR_SETOR_E_LINHAS As
+SELECT
+    AVG(usado) AS media_ram,
+    setor,
+    linha.nome AS nome_linha
+FROM
+    VW_RAM_CHART
+JOIN maquina ON maquina.id_maquina = VW_RAM_CHART.id_maquina
+JOIN linha ON linha.id_linha = maquina.fk_linhaM
+GROUP BY
+    setor, linha.nome;
+
+select *from  VW_MEDIA_RAM_POR_SETOR_E_LINHAS;
+select * from VW_MEDIA_CPU_POR_SETOR_E_LINHA
+        ORDER BY  setor DESC limit 5;
+
+   -- Média de CPU por setor e linha
+CREATE VIEW VW_MEDIA_CPU_POR_SETOR_E_LINHA AS
+SELECT
+    AVG(dado_coletado) AS media_cpu,
+    setor,
+    linha.nome AS nome_linha
+FROM
+    VW_CPU_CHART
+JOIN maquina ON maquina.id_maquina = VW_CPU_CHART.id_maquina
+JOIN linha ON linha.id_linha = maquina.fk_linhaM
+GROUP BY
+    setor, linha.nome;
+   
+
+
+-- Média de RAM por setor e linha
+CREATE VIEW VW_MEDIA_RAM_POR_SETOR_E_LINHA AS
+SELECT
+    AVG(usado) AS media_ram,
+    setor,
+    linha.nome AS nome_linha
+FROM
+    VW_RAM_CHART
+JOIN maquina ON maquina.id_maquina = VW_RAM_CHART.id_maquina
+JOIN linha ON linha.id_linha = maquina.fk_linhaM
+GROUP BY
+    setor, linha.nome;
+
+select *from VW_MEDIA_RAM_POR_SETOR_E_LINHA;
+select *from VW_MEDIA_CPU_POR_SETOR_E_LINHA;
+
+-- Média de Disco por setor e linha
+SELECT
+    AVG(usado) AS media_disco,
+    setor,
+    linha.nome AS nome_linha
+FROM
+    VW_DISCO_CHART
+JOIN maquina ON maquina.id_maquina = VW_DISCO_CHART.id_maquina
+JOIN linha ON linha.id_linha = maquina.fk_linhaM
+GROUP BY
+    setor, linha.nome;
+
+select * from VW_MEDIA_CPU_POR_SETOR_E_LINHA
 
 
 
