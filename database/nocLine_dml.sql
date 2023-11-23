@@ -55,15 +55,12 @@ INSERT INTO maquina VALUES
 SELECT * FROM maquina;
 
 -- INSERIR NA TABELA COMPONENTE
-INSERT INTO componente (id_componente, nome_componente, fk_maquina_componente, fk_empresa_componente) VALUES
+INSERT INTO componente VALUES
 (null, 'RAM', 1, 1, 1),
 (null, 'CPU', 1, 1, 2),
 (null, 'DISCO', 1, 1, 3),
-(null, 'REDE', 1, 1, 4),
-(null, 'SISTEMA', 1, 1);
+(null, 'REDE', 1, 1, 4);
 SELECT * FROM componente;
-
-desc componente;
 
 -- INSERIR NA TABELA UNIDADE DE MEDIDA
 INSERT INTO unidade_medida VALUES
@@ -73,12 +70,9 @@ INSERT INTO unidade_medida VALUES
 (null, "Graus Celsius", "°C"), 
 (null, "Hora", "H"); 
 SELECT * FROM unidade_medida;
-desc monitoramento;
-select * from maquina;
-update maquina set hostname= "gyulia-piqueira" where id_maquina=1;
-select * from monitoramento order by data_hora desc;
-select data_hora_inicializacao from maquina where id_maquina= 1;
-delete from maquina where id_maquina= 3;
+
+select * from metrica;
+
 -- metrica para a RAM
 INSERT INTO metrica (risco, perigo, fk_unidade_medida)
 VALUES (88.43, 90.71, 2);
@@ -102,6 +96,17 @@ SELECT * FROM metrica;
 -- metrica de rede
 INSERT INTO metrica (risco, perigo, fk_unidade_medida)
 VALUES (176.45, 250.23, 3);
+
+-- INSERIR NA TABELA COMPONENTE
+INSERT INTO componente (id_componente,nome_componente,fk_maquina_componente,fk_empresa_componente,fk_metrica_componente) VALUES
+(null, 'RAM', 1, 1, 1),
+(null, 'CPU', 1, 1, 2),
+(null, 'DISCO', 1, 1, 3),
+(null, 'REDE', 1, 1, 4);
+SELECT * FROM componente;
+
+
+select*from processos;
 
 SELECT * FROM monitoramento;
 -- alguns delete que eu precisei (gyu)

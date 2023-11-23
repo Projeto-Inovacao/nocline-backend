@@ -154,16 +154,19 @@ CREATE TABLE IF NOT EXISTS janela (
 -- alter table processos add column nome_processo varchar(200) after pid;
 
 CREATE TABLE IF NOT EXISTS processos (
-  pid INT PRIMARY KEY NOT NULL,
+  id_processos int PRIMARY KEY auto_increment NOT NULL,
+  pid INT NULL,
+  data_hora DATETIME NULL,
   nome_processo varchar(200),
   uso_cpu DOUBLE NULL,
   uso_memoria DOUBLE NULL,
+  uso_disco  DOUBLE NULL,
   memoria_virtual DOUBLE NULL,
   status_abertura TINYINT NULL,
   gravacao_disco double NULL, 
   temp_execucao double NULL, 
-  fk_maquinaP INT NOT NULL,
-  fk_empresaP INT NOT NULL,
+  fk_maquinaP INT NULL,
+  fk_empresaP INT NULL,
   CONSTRAINT fk_maq_empP
     FOREIGN KEY (fk_maquinaP, fk_empresaP)
     REFERENCES maquina (id_maquina, fk_empresaM)
@@ -190,6 +193,10 @@ CREATE TABLE IF NOT EXISTS metrica (
 CREATE TABLE IF NOT EXISTS componente (
   id_componente INT NOT NULL AUTO_INCREMENT,
   nome_componente VARCHAR(45) NULL,
+  fabricante VARCHAR(200) NULL,
+  identificador VARCHAR(200) NULL,
+  frequencia INT NULL,
+  microarquitetura varchar(200) NULL,
   fk_maquina_componente INT NOT NULL,
   fk_empresa_componente INT NOT NULL,
   fk_metrica_componente INT NULL,

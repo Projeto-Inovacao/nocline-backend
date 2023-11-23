@@ -133,14 +133,19 @@ SELECT
     componente.nome_componente,
     componente.fk_maquina_componente as id_maquina,
     MAX(maquina.hostname) AS hostname,
-    MAX(empresa.razao_social) AS razao_social
+    MAX(empresa.razao_social) AS razao_social,
+    -- Adicionando os novos dados
+    MAX(CASE WHEN monitoramento.descricao = 'velocidade de download' THEN ROUND(monitoramento.dado_coletado / 1000000, 2) END) AS velocidade_download,
+    MAX(CASE WHEN monitoramento.descricao = 'velocidade de upload' THEN ROUND(monitoramento.dado_coletado / 1000000, 2) END) AS velocidade_upload,
+    MAX(CASE WHEN monitoramento.descricao = 'ping' THEN monitoramento.dado_coletado END) AS ping,
+    MAX(CASE WHEN monitoramento.descricao = 'latencia' THEN monitoramento.dado_coletado END) AS latencia
 FROM
     monitoramento
 JOIN componente ON monitoramento.fk_componentes_monitoramento = componente.id_componente
 JOIN maquina ON monitoramento.fk_maquina_monitoramento = maquina.id_maquina
 JOIN empresa ON maquina.fk_empresaM = empresa.id_empresa
 WHERE
-    componente.nome_componente = 'REDE'
+    componente.nome_componente IN ('REDE', 'velocidade de download', 'velocidade de upload', 'ping', 'latencia')
 GROUP BY
     DATE_FORMAT(monitoramento.data_hora, "%Y-%m-%d %H:%i:%s"), componente.nome_componente, componente.fk_maquina_componente;
 
