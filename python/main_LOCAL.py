@@ -27,7 +27,7 @@ keyboard.add_hotkey("esc", stop)
 while not event.is_set():
     try:
         if mydb is None or not mydb.is_connected():
-            mydb = mysql.connector.connect(host='localhost', user=usr, password=pswd, database='nocLine')
+            mydb = mysql.connector.connect(host='localhost', user=usr, password=pswd, database='nocLine', auth_plugin='mysql_native_password')
 
         cpu = psutil.cpu_times()
         processador = psutil.cpu_percent(interval=1)

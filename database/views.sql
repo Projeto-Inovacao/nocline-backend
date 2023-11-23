@@ -5,8 +5,6 @@ select * from monitoramento where descricao = "uso de cpu py" order by data_hora
 select * from monitoramento where descricao = "temperatura cpu" order by data_hora desc;
 select * from monitoramento order by data_hora desc;
 
-
-
 -- SELECTS DE TODAS AS VIEWS
 select * from VW_CPU_CHART;
 select * from VW_CPU_KOTLIN_CHART order by data_hora desc limit 5;
@@ -133,19 +131,14 @@ SELECT
     componente.nome_componente,
     componente.fk_maquina_componente as id_maquina,
     MAX(maquina.hostname) AS hostname,
-    MAX(empresa.razao_social) AS razao_social,
-    -- Adicionando os novos dados
-    MAX(CASE WHEN monitoramento.descricao = 'velocidade de download' THEN ROUND(monitoramento.dado_coletado / 1000000, 2) END) AS velocidade_download,
-    MAX(CASE WHEN monitoramento.descricao = 'velocidade de upload' THEN ROUND(monitoramento.dado_coletado / 1000000, 2) END) AS velocidade_upload,
-    MAX(CASE WHEN monitoramento.descricao = 'ping' THEN monitoramento.dado_coletado END) AS ping,
-    MAX(CASE WHEN monitoramento.descricao = 'latencia' THEN monitoramento.dado_coletado END) AS latencia
+    MAX(empresa.razao_social) AS razao_social
 FROM
     monitoramento
 JOIN componente ON monitoramento.fk_componentes_monitoramento = componente.id_componente
 JOIN maquina ON monitoramento.fk_maquina_monitoramento = maquina.id_maquina
 JOIN empresa ON maquina.fk_empresaM = empresa.id_empresa
 WHERE
-    componente.nome_componente IN ('REDE', 'velocidade de download', 'velocidade de upload', 'ping', 'latencia')
+    componente.nome_componente = 'REDE'
 GROUP BY
     DATE_FORMAT(monitoramento.data_hora, "%Y-%m-%d %H:%i:%s"), componente.nome_componente, componente.fk_maquina_componente;
 
@@ -306,6 +299,57 @@ WHERE
     AND monitoramento.descricao IN ('uso de cpu kt', 'temperatura cpu')
 GROUP BY
     DATE_FORMAT(monitoramento.data_hora, "%Y-%m-%d %H:%i:%s"), componente.nome_componente, componente.fk_maquina_componente;
+use nocline;
+select * from monitoramento;
+
+select * from VW_MEDIA_RAM_POR_SETOR_E_LINHAS;
+-- Luize individual--
+Create view  VW_MEDIA_RAM_POR_SETOR_E_LINHAS As
+SELECT
+    AVG(usado) AS media_ram,
+    setor,
+    linha.nome AS nome_linha
+FROM
+    VW_RAM_CHART
+JOIN maquina ON maquina.id_maquina = VW_RAM_CHART.id_maquina
+JOIN linha ON linha.id_linha = maquina.fk_linhaM
+GROUP BY
+    setor, linha.nome;
+
+select *from  VW_MEDIA_RAM_POR_SETOR_E_LINHAS;
+select * from VW_MEDIA_CPU_POR_SETOR_E_LINHA
+        ORDER BY  setor DESC limit 5;
+
+   -- Média de CPU por setor e linha
+CREATE VIEW VW_MEDIA_CPU_POR_SETOR_E_LINHA AS
+SELECT
+    AVG(dado_coletado) AS media_cpu,
+    setor,
+    linha.nome AS nome_linha
+FROM
+    VW_CPU_CHART
+JOIN maquina ON maquina.id_maquina = VW_CPU_CHART.id_maquina
+JOIN linha ON linha.id_linha = maquina.fk_linhaM
+GROUP BY
+    setor, linha.nome;
+   
+
+select *from VW_MEDIA_CPU_POR_SETOR_E_LINHA;
+use nocline;
+-- Média de Disco por setor e linha
+SELECT
+    AVG(usado) AS media_disco,
+    setor,
+    linha.nome AS nome_linha
+FROM
+    VW_DISCO_CHART
+JOIN maquina ON maquina.id_maquina = VW_DISCO_CHART.id_maquina
+JOIN linha ON linha.id_linha = maquina.fk_linhaM
+GROUP BY
+    setor, linha.nome;
+
+select * from VW_MEDIA_CPU_POR_SETOR_E_LINHA;
+select * from maquina;
 
 
 
