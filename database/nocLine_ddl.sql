@@ -2,7 +2,6 @@
 CREATE DATABASE nocline;
 USE nocline;
 
-
 CREATE TABLE IF NOT EXISTS empresa(
   id_empresa INT PRIMARY KEY NOT NULL AUTO_INCREMENT, 
   razao_social VARCHAR(150) NOT NULL,
@@ -109,8 +108,9 @@ CREATE TABLE IF NOT EXISTS maquina (
   modelo VARCHAR(45) NULL,
   setor CHAR(3) NULL,
   status_maquina tinyint,
+  data_hora_inicializacao datetime,
   fk_empresaM INT NOT NULL,
-  fk_linhaM INT NOT NULL,
+  fk_linhaM INT NULL,
   CONSTRAINT pk_maquina
     PRIMARY KEY (id_maquina, fk_empresaM),
   CONSTRAINT fk_maquina_empresa
@@ -120,6 +120,8 @@ CREATE TABLE IF NOT EXISTS maquina (
     FOREIGN KEY (fk_linhaM)
     REFERENCES linha (id_linha)
 );
+-- alter table maquina add column data_hora_inicializacao datetime;
+-- alter table maquina modify column fk_linhaM INT NULL;
 
 CREATE TABLE IF NOT EXISTS controle_acesso (
   fk_colaborador INT NOT NULL,
@@ -184,16 +186,13 @@ CREATE TABLE IF NOT EXISTS metrica (
     FOREIGN KEY (fk_unidade_medida)
     REFERENCES unidade_medida (id_unidade));
 
+
 CREATE TABLE IF NOT EXISTS componente (
   id_componente INT NOT NULL AUTO_INCREMENT,
   nome_componente VARCHAR(45) NULL,
-  fabricante VARCHAR(200) NULL,
-  identificador VARCHAR(200) NULL,
-  frequencia INT NULL,
-  microarquitetura varchar(200) NULL,
   fk_maquina_componente INT NOT NULL,
   fk_empresa_componente INT NOT NULL,
-  fk_metrica_componente INT NOT NULL,
+  fk_metrica_componente INT NULL,
   CONSTRAINT pk_componente
     PRIMARY KEY (id_componente, fk_maquina_componente, fk_empresa_componente),
   CONSTRAINT fk_maq_empC
@@ -202,6 +201,23 @@ CREATE TABLE IF NOT EXISTS componente (
   CONSTRAINT fk_componente_metrica
     FOREIGN KEY (fk_metrica_componente)
     REFERENCES metrica (id_metrica)
+);
+-- alter table componente modify column fk_metrica_componente INT NULL;
+
+CREATE TABLE IF NOT EXISTS especificacao(
+  id_especificacao INT NOT NULL,
+  identificador VARCHAR(200) NULL,
+  fabricante VARCHAR(45) NULL,
+  frequencia MEDIUMTEXT NULL,
+  microarquitetura VARCHAR(45) NULL,
+  fk_componente_especificacao INT NOT NULL,
+  fk_maquina_especificacao INT NOT NULL,
+  fk_empresa_especificacao INT NOT NULL,
+CONSTRAINT pk_especificacao
+  PRIMARY KEY (id_especificacao, fk_componente_especificacao, fk_maquina_especificacao, fk_empresa_especificacao),
+  CONSTRAINT fk_especificacao_componente1
+    FOREIGN KEY (fk_componente_especificacao , fk_maquina_especificacao, fk_empresa_especificacao)
+    REFERENCES componente (id_componente, fk_maquina_componente , fk_empresa_componente)
 );
 
 CREATE TABLE IF NOT EXISTS monitoramento (

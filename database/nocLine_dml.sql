@@ -37,6 +37,8 @@ INSERT INTO plano VALUES
 (null, "Plus", 50, 1480.00, 10.55);
 SELECT * FROM plano;
 
+select*from controle_acesso;
+
 -- INSERIR NA TABELA CONTRATO 
  INSERT INTO contrato VALUES
 (null, "2023-11-01", "2024-11-01", 0, 1480.00, "Crédito", 1, 3);
@@ -53,23 +55,30 @@ INSERT INTO maquina VALUES
 SELECT * FROM maquina;
 
 -- INSERIR NA TABELA COMPONENTE
-INSERT INTO componente VALUES
+INSERT INTO componente (id_componente, nome_componente, fk_maquina_componente, fk_empresa_componente) VALUES
 (null, 'RAM', 1, 1, 1),
 (null, 'CPU', 1, 1, 2),
 (null, 'DISCO', 1, 1, 3),
-(null, 'REDE', 1, 1, 4);
+(null, 'REDE', 1, 1, 4),
+(null, 'SISTEMA', 1, 1);
 SELECT * FROM componente;
+
+desc componente;
 
 -- INSERIR NA TABELA UNIDADE DE MEDIDA
 INSERT INTO unidade_medida VALUES
-(null, 'Bytes', 'B'),
+ (null, 'Bytes', 'B'),
 (null, 'Porcentagem', '%'),
 (null, 'MegaBytes', 'MB'), 
-(null, "Graus Celsius", "°C"); 
+(null, "Graus Celsius", "°C"), 
+(null, "Hora", "H"); 
 SELECT * FROM unidade_medida;
-
-select * from metrica;
-
+desc monitoramento;
+select * from maquina;
+update maquina set hostname= "gyulia-piqueira" where id_maquina=1;
+select * from monitoramento order by data_hora desc;
+select data_hora_inicializacao from maquina where id_maquina= 1;
+delete from maquina where id_maquina= 3;
 -- metrica para a RAM
 INSERT INTO metrica (risco, perigo, fk_unidade_medida)
 VALUES (88.43, 90.71, 2);

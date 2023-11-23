@@ -5,6 +5,8 @@ select * from monitoramento where descricao = "uso de cpu py" order by data_hora
 select * from monitoramento where descricao = "temperatura cpu" order by data_hora desc;
 select * from monitoramento order by data_hora desc;
 
+
+
 -- SELECTS DE TODAS AS VIEWS
 select * from VW_CPU_CHART;
 select * from VW_CPU_KOTLIN_CHART order by data_hora desc limit 5;
