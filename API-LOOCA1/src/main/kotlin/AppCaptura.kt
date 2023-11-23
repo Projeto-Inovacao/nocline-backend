@@ -8,7 +8,6 @@ import javax.swing.JOptionPane
 
 fun main() {
     Conexao.criarTabelas()
-
     val looca = Looca()
     val login = Usuario()
     val dadoslogin = LoginRepositorio()

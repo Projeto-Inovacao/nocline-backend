@@ -1,19 +1,21 @@
 use nocline;
 
 -- TESTES
-select * from monitoramento where descricao = "uso de cpu kt" order by data_hora desc;
+select * from monitoramento where descricao = "uso de cpu py" order by data_hora desc;
 select * from monitoramento where descricao = "temperatura cpu" order by data_hora desc;
 select * from monitoramento order by data_hora desc;
 
+
+
 -- SELECTS DE TODAS AS VIEWS
 select * from VW_CPU_CHART;
-select * from VW_CPU_KOTLIN_CHART;
+select * from VW_CPU_KOTLIN_CHART order by data_hora desc limit 5;
 select * from VW_RAM_CHART order by data_hora desc;
 select * from VW_DISCO_CHART;
 select * from VW_REDE_CHART;
 select * from VW_JANELAS_CHART;
 select * from VW_ALERTAS_TABLE;
-select * from VW_TEMP_CHART;
+select * from VW_TEMP_CHART order by data_hora desc limit 5;
 select * from VW_DESEMPENHO_CHART;
 select * from VW_TEMPXCPU_CHART;
 select * from VW_DESEMPENHO_CHART_TEMP;
@@ -47,6 +49,7 @@ SELECT
     nome_componente,
     descricao,
     id_maquina,
+    empresa.id_empresa,
     hostname,
     razao_social
 FROM
@@ -130,14 +133,19 @@ SELECT
     componente.nome_componente,
     componente.fk_maquina_componente as id_maquina,
     MAX(maquina.hostname) AS hostname,
-    MAX(empresa.razao_social) AS razao_social
+    MAX(empresa.razao_social) AS razao_social,
+    -- Adicionando os novos dados
+    MAX(CASE WHEN monitoramento.descricao = 'velocidade de download' THEN ROUND(monitoramento.dado_coletado / 1000000, 2) END) AS velocidade_download,
+    MAX(CASE WHEN monitoramento.descricao = 'velocidade de upload' THEN ROUND(monitoramento.dado_coletado / 1000000, 2) END) AS velocidade_upload,
+    MAX(CASE WHEN monitoramento.descricao = 'ping' THEN monitoramento.dado_coletado END) AS ping,
+    MAX(CASE WHEN monitoramento.descricao = 'latencia' THEN monitoramento.dado_coletado END) AS latencia
 FROM
     monitoramento
 JOIN componente ON monitoramento.fk_componentes_monitoramento = componente.id_componente
 JOIN maquina ON monitoramento.fk_maquina_monitoramento = maquina.id_maquina
 JOIN empresa ON maquina.fk_empresaM = empresa.id_empresa
 WHERE
-    componente.nome_componente = 'REDE'
+    componente.nome_componente IN ('REDE', 'velocidade de download', 'velocidade de upload', 'ping', 'latencia')
 GROUP BY
     DATE_FORMAT(monitoramento.data_hora, "%Y-%m-%d %H:%i:%s"), componente.nome_componente, componente.fk_maquina_componente;
 
@@ -298,6 +306,8 @@ WHERE
     AND monitoramento.descricao IN ('uso de cpu kt', 'temperatura cpu')
 GROUP BY
     DATE_FORMAT(monitoramento.data_hora, "%Y-%m-%d %H:%i:%s"), componente.nome_componente, componente.fk_maquina_componente;
+
+
 
 
 

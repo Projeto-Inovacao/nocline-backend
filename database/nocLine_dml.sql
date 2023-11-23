@@ -37,6 +37,8 @@ INSERT INTO plano VALUES
 (null, "Plus", 50, 1480.00, 10.55);
 SELECT * FROM plano;
 
+select*from controle_acesso;
+
 -- INSERIR NA TABELA CONTRATO 
  INSERT INTO contrato VALUES
 (null, "2023-11-01", "2024-11-01", 0, 1480.00, "Crédito", 1, 3);
@@ -62,10 +64,11 @@ SELECT * FROM componente;
 
 -- INSERIR NA TABELA UNIDADE DE MEDIDA
 INSERT INTO unidade_medida VALUES
-(null, 'Bytes', 'B'),
+ (null, 'Bytes', 'B'),
 (null, 'Porcentagem', '%'),
 (null, 'MegaBytes', 'MB'), 
-(null, "Graus Celsius", "°C"); 
+(null, "Graus Celsius", "°C"), 
+(null, "Hora", "H"); 
 SELECT * FROM unidade_medida;
 
 select * from metrica;
@@ -94,7 +97,18 @@ SELECT * FROM metrica;
 INSERT INTO metrica (risco, perigo, fk_unidade_medida)
 VALUES (176.45, 250.23, 3);
 
+-- INSERIR NA TABELA COMPONENTE
+INSERT INTO componente (id_componente,nome_componente,fk_maquina_componente,fk_empresa_componente,fk_metrica_componente) VALUES
+(null, 'RAM', 1, 1, 1),
+(null, 'CPU', 1, 1, 2),
+(null, 'DISCO', 1, 1, 3),
+(null, 'REDE', 1, 1, 4);
+SELECT * FROM componente;
 
+
+select*from processos;
+
+SELECT * FROM monitoramento;
 -- alguns delete que eu precisei (gyu)
 -- DELETE FROM alerta WHERE fk_componenente_alerta >= 1 AND fk_componenente_alerta <= 8400;
 -- DELETE FROM monitoramento WHERE id_monitoramento >= 1 AND id_monitoramento <= 8400;
