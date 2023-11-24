@@ -37,8 +37,6 @@ INSERT INTO plano VALUES
 (null, "Plus", 50, 1480.00, 10.55);
 SELECT * FROM plano;
 
-select*from controle_acesso;
-
 -- INSERIR NA TABELA CONTRATO 
  INSERT INTO contrato VALUES
 (null, "2023-11-01", "2024-11-01", 0, 1480.00, "Crédito", 1, 3);
@@ -54,22 +52,14 @@ INSERT INTO maquina VALUES
 (null, '131.72.61.67', 'Windows', 'gyulia_piqueira', 'Samsung', 'CCO', 1, 1, 1);
 SELECT * FROM maquina;
 
--- INSERIR NA TABELA COMPONENTE
-INSERT INTO componente VALUES
-(null, 'RAM', 1, 1, 1),
-(null, 'CPU', 1, 1, 2),
-(null, 'DISCO', 1, 1, 3),
-(null, 'REDE', 1, 1, 4);
-SELECT * FROM componente;
-
 -- INSERIR NA TABELA UNIDADE DE MEDIDA
 INSERT INTO unidade_medida VALUES
- (null, 'Bytes', 'B'),
+(null, 'Bytes', 'B'),
 (null, 'Porcentagem', '%'),
 (null, 'MegaBytes', 'MB'), 
-(null, "Graus Celsius", "°C"), 
-(null, "Hora", "H"); 
+(null, "Graus Celsius", "°C"); 
 SELECT * FROM unidade_medida;
+
 
 select * from metrica;
 
