@@ -207,6 +207,7 @@ CREATE TABLE IF NOT EXISTS componente (
 CREATE TABLE IF NOT EXISTS especificacao(
   id_Processo INT NOT NULL AUTO_INCREMENT,
   id_especificacao INT,
+  data_hora DATETIME NOT NULL,
   identificador VARCHAR(200) NULL,
   fabricante VARCHAR(45) NULL,
   frequencia MEDIUMTEXT NULL,
