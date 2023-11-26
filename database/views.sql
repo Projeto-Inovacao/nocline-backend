@@ -18,6 +18,9 @@ select * from VW_DESEMPENHO_CHART;
 select * from VW_TEMPXCPU_CHART;
 select * from VW_DESEMPENHO_CHART_TEMP;
 
+select * from VW_ALERTAS_TABLE where fk_empresaM = 1 order by qtd_alerta_maquina desc;
+
+
 
 -- view CPU - py
 CREATE VIEW VW_CPU_CHART AS
@@ -131,19 +134,14 @@ SELECT
     componente.nome_componente,
     componente.fk_maquina_componente as id_maquina,
     MAX(maquina.hostname) AS hostname,
-    MAX(empresa.razao_social) AS razao_social,
-    -- Adicionando os novos dados
-    MAX(CASE WHEN monitoramento.descricao = 'velocidade de download' THEN ROUND(monitoramento.dado_coletado / 1000000, 2) END) AS velocidade_download,
-    MAX(CASE WHEN monitoramento.descricao = 'velocidade de upload' THEN ROUND(monitoramento.dado_coletado / 1000000, 2) END) AS velocidade_upload,
-    MAX(CASE WHEN monitoramento.descricao = 'ping' THEN monitoramento.dado_coletado END) AS ping,
-    MAX(CASE WHEN monitoramento.descricao = 'latencia' THEN monitoramento.dado_coletado END) AS latencia
+    MAX(empresa.razao_social) AS razao_social
 FROM
     monitoramento
 JOIN componente ON monitoramento.fk_componentes_monitoramento = componente.id_componente
 JOIN maquina ON monitoramento.fk_maquina_monitoramento = maquina.id_maquina
 JOIN empresa ON maquina.fk_empresaM = empresa.id_empresa
 WHERE
-    componente.nome_componente IN ('REDE', 'velocidade de download', 'velocidade de upload', 'ping', 'latencia')
+    componente.nome_componente = 'REDE'
 GROUP BY
     DATE_FORMAT(monitoramento.data_hora, "%Y-%m-%d %H:%i:%s"), componente.nome_componente, componente.fk_maquina_componente;
 
@@ -305,12 +303,81 @@ WHERE
 GROUP BY
     DATE_FORMAT(monitoramento.data_hora, "%Y-%m-%d %H:%i:%s"), componente.nome_componente, componente.fk_maquina_componente;
 
+-- individual jonny
 
+SELECT
+    AVG(usado) AS media_uso_ram,
+    data_hora 
+FROM
+    VW_RAM_CHART
+WHERE
+    id_maquina IN (
+        SELECT id_maquina
+        FROM maquina
+        WHERE fk_linhaM = 1
+    ) group by data_hora;
+    
+    SELECT
+    AVG(dado_coletado) AS media_uso_cpu,
+    data_hora
+FROM
+    VW_CPU_CHART
+WHERE
+    id_maquina IN (
+        SELECT id_maquina
+        FROM maquina
+        WHERE fk_linhaM = 1
+    )group by data_hora ORDER BY
+    data_hora DESC;
+    
+    -- Desempenho individual jonny
+    
+ SELECT
+    RAM.media_uso_ram,
+    CPU.media_uso_cpu,
+    RAM.data_hora
+FROM
+    (
+        SELECT
+            AVG(usado) AS media_uso_ram,
+            data_hora,
+            id_maquina
+        FROM
+            VW_RAM_CHART
+        WHERE
+            id_maquina IN (
+                SELECT id_maquina
+                FROM maquina
+                WHERE fk_linhaM = 1
+            )
+        GROUP BY
+            data_hora, id_maquina
+    ) AS RAM
+JOIN
+    (
+        SELECT
+            AVG(dado_coletado) AS media_uso_cpu,
+            data_hora,
+            id_maquina
+        FROM
+            VW_CPU_CHART
+        WHERE
+            id_maquina IN (
+                SELECT id_maquina
+                FROM maquina
+                WHERE fk_linhaM = 1
+            )
+        GROUP BY
+            data_hora, id_maquina
+    ) AS CPU
+ON RAM.data_hora = CPU.data_hora
+ORDER BY
+    RAM.data_hora DESC limit 1;
 
+    
+   
 
-
-
-
-
+    
+    
 
 

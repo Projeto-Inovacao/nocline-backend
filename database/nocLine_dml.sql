@@ -13,6 +13,7 @@ INSERT INTO  linha VALUES
 (null, "azul", 1, 1);
 SELECT * FROM linha;
 
+
 -- INSERIR NA TABELA NÍVEL DE ACESSO
 INSERT INTO nivel_acesso VALUES
 (null, 'RPL', 'Representante Legal'),
@@ -42,15 +43,11 @@ SELECT * FROM plano;
 (null, "2023-11-01", "2024-11-01", 0, 1480.00, "Crédito", 1, 3);
 SELECT * FROM contrato;
 
--- INSERIR NA TABELA LINHA 
-INSERT INTO linha VALUES
-(null, 'azul', 1, 1);
-SELECT * FROM linha;
-
 -- INSERIR NA TABELA MÁQUINA
 INSERT INTO maquina VALUES
 (null, '131.72.61.67', 'Windows', 'gyulia_piqueira', 'Samsung', 'CCO', 1, 1, 1);
 SELECT * FROM maquina;
+
 
 -- INSERIR NA TABELA UNIDADE DE MEDIDA
 INSERT INTO unidade_medida VALUES
@@ -59,7 +56,6 @@ INSERT INTO unidade_medida VALUES
 (null, 'MegaBytes', 'MB'), 
 (null, "Graus Celsius", "°C"); 
 SELECT * FROM unidade_medida;
-
 
 select * from metrica;
 
@@ -88,15 +84,12 @@ INSERT INTO metrica (risco, perigo, fk_unidade_medida)
 VALUES (176.45, 250.23, 3);
 
 -- INSERIR NA TABELA COMPONENTE
-INSERT INTO componente (id_componente,nome_componente,fk_maquina_componente,fk_empresa_componente,fk_metrica_componente) VALUES
+INSERT INTO componente (id_componente, nome_componente, fk_maquina_componente, fk_empresa_componente, fk_metrica_componente) VALUES
 (null, 'RAM', 1, 1, 1),
 (null, 'CPU', 1, 1, 2),
 (null, 'DISCO', 1, 1, 3),
 (null, 'REDE', 1, 1, 4);
 SELECT * FROM componente;
-
-
-select*from processos;
 
 SELECT * FROM monitoramento;
 -- alguns delete que eu precisei (gyu)
