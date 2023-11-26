@@ -49,7 +49,7 @@ SELECT * FROM linha;
 
 -- INSERIR NA TABELA MÁQUINA
 INSERT INTO maquina VALUES
-(null, '131.72.61.67', 'Windows', 'gyulia_piqueira', 'Samsung', 'CCO', 1, 1, 1);
+(null, '131.72.61.67', 'Windows', 'gyulia_piqueira', 'Samsung', 'CCO', 1,now(), 1, 1);
 SELECT * FROM maquina;
 
 -- INSERIR NA TABELA UNIDADE DE MEDIDA
