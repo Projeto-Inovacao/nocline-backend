@@ -34,7 +34,7 @@ while not event.is_set():
     memoria_disponivel = memoria.available
     memoria_total = memoria.total
 
-    mydb = mysql.connector.connect(host='localhost', user=usr, password=pswd, database='nocLine')
+    mydb = mysql.connector.connect(host='localhost', user=usr, password=pswd, database='nocline')
     
     try:
         if mydb.is_connected():

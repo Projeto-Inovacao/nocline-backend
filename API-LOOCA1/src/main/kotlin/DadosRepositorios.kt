@@ -82,7 +82,7 @@ class DadosRepositorios {
         var rowBytesEnviados = jdbcTemplate.update(
             """
                 insert into monitoramento (dado_coletado, data_hora, descricao, fk_componentes_monitoramento, fk_maquina_monitoramento, fk_empresa_monitoramento, fk_unidade_medida) values
-                (?,?,"bytes enviados",4,$id_maquina,$fk_empresa,1)
+                (?,?,"bytes enviados",8,$id_maquina,$fk_empresa,1)
             """,
             novaRede.bytesEnviados,
             novaRede.dataHora
@@ -91,7 +91,7 @@ class DadosRepositorios {
         var rowBytesRecebidos = jdbcTemplate.update(
             """
                 insert into monitoramento (dado_coletado, data_hora, descricao, fk_componentes_monitoramento, fk_maquina_monitoramento, fk_empresa_monitoramento, fk_unidade_medida) values
-                (?,?,"bytes recebidos",4,$id_maquina,$fk_empresa,1)
+                (?,?,"bytes recebidos",8,$id_maquina,$fk_empresa,1)
             """,
             novaRede.bytesRecebidos,
             novaRede.dataHora

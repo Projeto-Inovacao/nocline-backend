@@ -1,5 +1,5 @@
 -- DROP DATABASE nocline;
-CREATE DATABASE nocline;
+CREATE DATABASE IF NOT EXISTS nocline;
 USE nocline;
 
 CREATE TABLE IF NOT EXISTS empresa(
@@ -151,6 +151,7 @@ CREATE TABLE IF NOT EXISTS janela (
 
 CREATE TABLE IF NOT EXISTS processos (
   pid INT PRIMARY KEY NOT NULL,
+  nome_processo VARCHAR(200),
   uso_cpu DOUBLE NULL,
   uso_memoria DOUBLE NULL,
   memoria_virtual DOUBLE NULL,
