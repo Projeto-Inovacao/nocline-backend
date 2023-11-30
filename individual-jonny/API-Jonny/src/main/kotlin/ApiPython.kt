@@ -1,3 +1,16 @@
+import java.io.BufferedReader
+import java.io.File
+import java.io.InputStreamReader
+import kotlin.reflect.typeOf
+
+object ApiPython {
+    private lateinit var processoPython: Process
+    private lateinit var errorStream: InputStreamReader
+    private lateinit var errorBufferedReader: BufferedReader
+
+    fun chamarApiPython() {
+        val nomeArquivoPyDefault = "individual-Jonny.py"
+        val codigoPython = """
 import psutil
 import threading
 import time
@@ -46,13 +59,13 @@ while not event.is_set():
             if result:
                 id_maquina, fk_empresaM = result
                 
-                sql_query = """
+                sql_query = ""${'"'}
                 INSERT INTO monitoramento (dado_coletado, data_hora, descricao, fk_componentes_monitoramento, fk_maquina_monitoramento, fk_empresa_monitoramento, fk_unidade_medida)
                 VALUES (%s, now(), 'uso de cpu py', (SELECT id_componente from componente WHERE nome_componente = 'CPU' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s)),
                        (%s, now(), 'memoria disponivel', (SELECT id_componente from componente WHERE nome_componente = 'RAM' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s)),
                        (%s, now(), 'memoria total', (SELECT id_componente from componente WHERE nome_componente = 'RAM' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s));
                        
-                """
+                ""${'"'}
                 
                 val = [cpu_percentual, id_maquina, id_maquina, fk_empresaM, '%',
                        memoria_disponivel, id_maquina, id_maquina, fk_empresaM, 'B',
@@ -73,3 +86,44 @@ while not event.is_set():
             mycursor.close()
             mydb.close()
             time.sleep(5)
+
+
+        """.trimIndent()
+
+        File(nomeArquivoPyDefault).writeText(codigoPython)
+
+        // Use ProcessBuilder para iniciar o processo Python
+        println("Iniciando o processo Python...")
+        val processBuilder = ProcessBuilder("python.exe", nomeArquivoPyDefault)
+        processoPython = processBuilder.start()
+        println("Processo Python iniciado.")
+
+
+        // Inicialize as propriedades relacionadas
+        errorStream = InputStreamReader(processoPython.errorStream)
+        errorBufferedReader = BufferedReader(errorStream)
+
+        val thread = Thread {
+            val combinedInputStream = InputStreamReader(processoPython.inputStream)
+            val combinedBufferedReader = BufferedReader(combinedInputStream)
+
+            val errorInputStream = InputStreamReader(processoPython.errorStream)
+            val errorBufferedReader = BufferedReader(errorInputStream)
+
+            while (true) {
+                // Leia a saída padrão
+                val line = combinedBufferedReader.readLine()
+                if (line == null) break
+                println(line)
+
+                // Leia a saída de erro
+                val errorLine = errorBufferedReader.readLine()
+                if (errorLine == null) break
+                println("Erro: $errorLine")
+            }
+        }
+
+        thread.start()
+
+    }
+}

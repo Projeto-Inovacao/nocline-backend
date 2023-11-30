@@ -73,3 +73,4 @@ while not event.is_set():
             mycursor.close()
             mydb.close()
             time.sleep(5)
+
