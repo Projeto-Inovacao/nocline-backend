@@ -114,19 +114,20 @@ while not event.is_set():
                         if result:
                             id_maquina, fk_empresaM = result
 
+                            data_hora_local = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                             sql_query = """
                                 INSERT INTO monitoramento (dado_coletado, data_hora, descricao, fk_componentes_monitoramento, fk_maquina_monitoramento, fk_empresa_monitoramento, fk_unidade_medida)
-                                VALUES (%s, now(), 'uso de cpu py', (SELECT id_componente from componente WHERE nome_componente = 'CPU' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s)),
-                                    (%s, now(), 'disco livre', (SELECT id_componente from componente WHERE nome_componente = 'DISCO' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s)),
-                                    (%s, now(), 'disco total', (SELECT id_componente from componente WHERE nome_componente = 'DISCO' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s)),
-                                    (%s, now(), 'memoria disponivel', (SELECT id_componente from componente WHERE nome_componente = 'RAM' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s)),
-                                    (%s, now(), 'memoria total', (SELECT id_componente from componente WHERE nome_componente = 'RAM' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s));
+                                VALUES (%s, %s, 'uso de cpu py', (SELECT id_componente from componente WHERE nome_componente = 'CPU' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s)),
+                                    (%s, %s, 'disco livre', (SELECT id_componente from componente WHERE nome_componente = 'DISCO' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s)),
+                                    (%s, %s, 'disco total', (SELECT id_componente from componente WHERE nome_componente = 'DISCO' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s)),
+                                    (%s, %s, 'memoria disponivel', (SELECT id_componente from componente WHERE nome_componente = 'RAM' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s)),
+                                    (%s, %s, 'memoria total', (SELECT id_componente from componente WHERE nome_componente = 'RAM' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s));
                             """
-                            val = [cpu_percentual, id_maquina, id_maquina, fk_empresaM, '%',
-                                disco_livre, id_maquina, id_maquina, fk_empresaM, 'B',
-                                disco_total, id_maquina, id_maquina, fk_empresaM, 'B',
-                                memoria_disponivel, id_maquina, id_maquina, fk_empresaM, 'B',
-                                memoria_total, id_maquina, id_maquina, fk_empresaM, 'B']
+                            val = [cpu_percentual, data_hora_local, id_maquina, id_maquina, fk_empresaM, '%',
+                                disco_livre, data_hora_local, id_maquina, id_maquina, fk_empresaM, 'B',
+                                disco_total, data_hora_local, id_maquina, id_maquina, fk_empresaM, 'B',
+                                memoria_disponivel, data_hora_local, id_maquina, id_maquina, fk_empresaM, 'B',
+                                memoria_total, data_hora_local, id_maquina, id_maquina, fk_empresaM, 'B']
 
                             mycursor_server.execute(sql_query, val)
                             mydb_server.commit()
