@@ -138,6 +138,7 @@ CREATE TABLE IF NOT EXISTS controle_acesso (
     FOREIGN KEY (fk_maquina, fk_empresa_maquina)
     REFERENCES maquina (id_maquina, fk_empresaM)
 );
+alter table controle_acesso modify column fk_maquina int null;
 
 CREATE TABLE IF NOT EXISTS janela (
   id_janela INT PRIMARY KEY NOT NULL AUTO_INCREMENT,

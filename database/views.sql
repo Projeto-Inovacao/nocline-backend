@@ -8,14 +8,15 @@ select * from monitoramento order by data_hora desc;
 
 
 -- SELECTS DE TODAS AS VIEWS
+select * from maquina;
 select * from VW_CPU_CHART;
-select * from VW_CPU_KOTLIN_CHART order by data_hora desc limit 5;
-select * from VW_RAM_CHART order by data_hora desc;
+select * from VW_CPU_KOTLIN_CHART;
+select * from VW_RAM_CHART;
 select * from VW_DISCO_CHART;
 select * from VW_REDE_CHART;
 select * from VW_JANELAS_CHART;
 select * from VW_ALERTAS_TABLE;
-select * from VW_TEMP_CHART order by data_hora desc limit 5;
+select * from VW_TEMP_CHART;
 select * from VW_DESEMPENHO_CHART;
 select * from VW_TEMPXCPU_CHART;
 select * from VW_DESEMPENHO_CHART_TEMP;

@@ -8,7 +8,7 @@ from cred import usr, pswd
 import json
 import requests
 
-webhook_url = "https://hooks.slack.com/services/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"
+webhook_url = "https://hooks.slack.com/services/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"
 headers = {'Content-Type': 'application/json'}
 
 event = threading.Event()
@@ -48,7 +48,8 @@ while not event.is_set():
             print("Condição de alerta CPU atendida (Perigo)")
             mensagem_cpu2 = {"text": f"☠️ Alerta de Perigo na CPU da máquina {id_maquina}!"}
             response = requests.post(webhook_url, data=json.dumps(mensagem_cpu2), headers=headers)
-            print("Resposta da API do Slack:", response.text)
+            print("Resposta da API do Slack:", response.status_code)
+            print("Conteúdo da resposta:", response.text)
         else:
             print("Nenhuma condição de alerta CPU atendida")
                 

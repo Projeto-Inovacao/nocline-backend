@@ -8,6 +8,8 @@ INSERT INTO empresa VALUES
 (null, 'ViaMobilidade', '03.649.148/0001-40'); 
 SELECT * FROM empresa;
 
+
+
 -- INSERIR NA TABELA LINHA
 INSERT INTO  linha VALUES 
 (null, "azul", 1, 1);

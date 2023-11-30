@@ -78,4 +78,4 @@ while not event.is_set():
             update_machine_cursor.close()
             check_machine_cursor.close()
             mycursor.close()
-            time.sleep(30)  # Adicionado aqui se você desejar um atraso antes da próxima iteração
+            time.sleep(60)  # Adicionado aqui se você desejar um atraso antes da próxima iteração
