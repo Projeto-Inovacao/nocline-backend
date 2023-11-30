@@ -3,10 +3,11 @@ import threading
 import time
 import keyboard
 import socket
+import pymssql
 import mysql.connector
-from cred import usr, pswd
 import json
 import requests
+from cred import usr, pswd
 
 webhook_url = "https://hooks.slack.com/services/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"
 headers = {'Content-Type': 'application/json'}
@@ -52,45 +53,42 @@ while not event.is_set():
             print("Conteúdo da resposta:", response.text)
         else:
             print("Nenhuma condição de alerta CPU atendida")
-                
+
         # Componente Disco
         disco_livre = disco.free
         disco_total = disco.total
-        conta_disco_livre = (disco_livre/disco.total)* 100
-        conta_disco_usado =  100 - conta_disco_livre
+        conta_disco_livre = (disco_livre / disco.total) * 100
+        conta_disco_usado = 100 - conta_disco_livre
         print("Verificando condições de alerta Disco")
-        print("Valor atual de disco_usado:", round(conta_disco_usado,2))
-        if round(conta_disco_usado,2) > 20 and round(conta_disco_usado,2) < 60:
+        print("Valor atual de disco_usado:", round(conta_disco_usado, 2))
+        if round(conta_disco_usado, 2) > 20 and round(conta_disco_usado, 2) < 60:
             mensagem_disco1 = {"text": f"⚠ Alerta de Risco no Disco da máquina {id_maquina}!"}
             response = requests.post(webhook_url, data=json.dumps(mensagem_disco1), headers=headers)
             print("Resposta da API do Slack:", response.text)
-        elif round(conta_disco_usado,2) > 60:
+        elif round(conta_disco_usado, 2) > 60:
             mensagem_disco2 = {"text": f"☠️ Alerta de Perigo no Disco da máquina {id_maquina}, há muito pouco espaço!"}
             response = requests.post(webhook_url, data=json.dumps(mensagem_disco2), headers=headers)
             print("Resposta da API do Slack:", response.text)
         else:
             print("Nenhuma condição de alerta Disco atendida")
 
-
         # Memória
         memoria_disponivel = memoria.available
         memoria_total = memoria.total
-        conta_memoria_disponivel = (memoria_disponivel/memoria_total)* 100
-        conta_memoria_usada =  100 - conta_memoria_disponivel
+        conta_memoria_disponivel = (memoria_disponivel / memoria_total) * 100
+        conta_memoria_usada = 100 - conta_memoria_disponivel
         print("Verificando condições de alerta RAM")
-        print("Valor atual de memoria_usada:", round(conta_memoria_usada,2))
-        if round(conta_memoria_usada,2) > 80 and round(conta_memoria_usada,2) < 90:
+        print("Valor atual de memoria_usada:", round(conta_memoria_usada, 2))
+        if round(conta_memoria_usada, 2) > 80 and round(conta_memoria_usada, 2) < 90:
             mensagem_ram1 = {"text": f"⚠ Alerta de Risco na Memória RAM da máquina {id_maquina}!"}
             response = requests.post(webhook_url, data=json.dumps(mensagem_ram1), headers=headers)
             print("Resposta da API do Slack:", response.text)
-        elif round(conta_memoria_usada,2) > 90:
+        elif round(conta_memoria_usada, 2) > 90:
             mensagem_ram2 = {"text": f"☠️ Alerta de Perigo na Memória RAM da máquina {id_maquina}!"}
             response = requests.post(webhook_url, data=json.dumps(mensagem_ram2), headers=headers)
             print("Resposta da API do Slack:", response.text)
         else:
             print("Nenhuma condição de alerta RAM atendida")
-
-        # Restante do código
 
         sql_query = "SELECT id_maquina, fk_empresaM FROM maquina WHERE hostname = %s;"
         mycursor = mydb.cursor()
@@ -101,33 +99,85 @@ while not event.is_set():
         if result:
             id_maquina, fk_empresaM = result
 
-            # Restante do código
+            # Conexão com o servidor remoto
+            try:
+                mydb_server = pymssql.connect(server='IPV4ELASTICO', database='nocline', user='sa', password='sptech')
 
-            sql_query = """
-                INSERT INTO monitoramento (dado_coletado, data_hora, descricao, fk_componentes_monitoramento, fk_maquina_monitoramento, fk_empresa_monitoramento, fk_unidade_medida)
-                VALUES (%s, now(), 'uso de cpu py', (SELECT id_componente from componente WHERE nome_componente = 'CPU' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s)),
-                       (%s, now(), 'disco livre', (SELECT id_componente from componente WHERE nome_componente = 'DISCO' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s)),
-                       (%s, now(), 'disco total', (SELECT id_componente from componente WHERE nome_componente = 'DISCO' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s)),
-                       (%s, now(), 'memoria disponivel', (SELECT id_componente from componente WHERE nome_componente = 'RAM' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s)),
-                       (%s, now(), 'memoria total', (SELECT id_componente from componente WHERE nome_componente = 'RAM' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s));
+                try:
+                    if mydb_server.is_connected():
+                        mycursor_server = mydb_server.cursor()
+
+                        sql_query_server = "SELECT id_maquina, fk_empresaM FROM maquina WHERE hostname = %s;"
+                        mycursor_server.execute(sql_query_server, (hostname,))
+
+                        result = mycursor_server.fetchone()
+
+                        if result:
+                            id_maquina, fk_empresaM = result
+
+                            data_hora_local = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                            sql_query = """
+                                INSERT INTO monitoramento (dado_coletado, data_hora, descricao, fk_componentes_monitoramento, fk_maquina_monitoramento, fk_empresa_monitoramento, fk_unidade_medida)
+                                VALUES (%s, %s, 'uso de cpu py', (SELECT id_componente from componente WHERE nome_componente = 'CPU' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s)),
+                                    (%s, %s, 'disco livre', (SELECT id_componente from componente WHERE nome_componente = 'DISCO' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s)),
+                                    (%s, %s, 'disco total', (SELECT id_componente from componente WHERE nome_componente = 'DISCO' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s)),
+                                    (%s, %s, 'memoria disponivel', (SELECT id_componente from componente WHERE nome_componente = 'RAM' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s)),
+                                    (%s, %s, 'memoria total', (SELECT id_componente from componente WHERE nome_componente = 'RAM' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s));
+                            """
+                            val = [cpu_percentual, data_hora_local, id_maquina, id_maquina, fk_empresaM, '%',
+                                disco_livre, data_hora_local, id_maquina, id_maquina, fk_empresaM, 'B',
+                                disco_total, data_hora_local, id_maquina, id_maquina, fk_empresaM, 'B',
+                                memoria_disponivel, data_hora_local, id_maquina, id_maquina, fk_empresaM, 'B',
+                                memoria_total, data_hora_local, id_maquina, id_maquina, fk_empresaM, 'B']
+
+                            mycursor_server.execute(sql_query, val)
+                            mydb_server.commit()
+                            print(mycursor_server.rowcount, "registros inseridos no servidor remoto")
+                            print("\r\n")
+                               
+                        else:
+                            print(f"A máquina {hostname} não foi cadastrada.")
+
+                except mysql.connector.Error as e:
+                    print("Erro ao conectar com o servidor MySQLServer:", e)
+
+                finally:
+                    if mydb_server.is_connected():
+                        mycursor_server.close()
+                        mydb_server.close()
+
+            except pymssql.OperationalError as e:
+                print("MYSQL Server não está ativo, contate nossa equipe para mais detalhes")
+   
+                sql_query = """
+                    INSERT INTO monitoramento (dado_coletado, data_hora, descricao, fk_componentes_monitoramento, fk_maquina_monitoramento, fk_empresa_monitoramento, fk_unidade_medida)
+                    VALUES (%s, now(), 'uso de cpu py', (SELECT id_componente from componente WHERE nome_componente = 'CPU' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s)),
+                           (%s, now(), 'disco livre', (SELECT id_componente from componente WHERE nome_componente = 'DISCO' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s)),
+                           (%s, now(), 'disco total', (SELECT id_componente from componente WHERE nome_componente = 'DISCO' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s)),
+                           (%s, now(), 'memoria disponivel', (SELECT id_componente from componente WHERE nome_componente = 'RAM' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s)),
+                           (%s, now(), 'memoria total', (SELECT id_componente from componente WHERE nome_componente = 'RAM' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s));
                 """
-            val = [cpu_percentual, id_maquina, id_maquina, fk_empresaM, '%',
-                   disco_livre, id_maquina, id_maquina, fk_empresaM, 'B',
-                   disco_total, id_maquina, id_maquina, fk_empresaM, 'B',
-                   memoria_disponivel, id_maquina, id_maquina, fk_empresaM, 'B',
-                   memoria_total, id_maquina, id_maquina, fk_empresaM, 'B']
+                val = [cpu_percentual, id_maquina, id_maquina, fk_empresaM, '%',
+                       disco_livre, id_maquina, id_maquina, fk_empresaM, 'B',
+                       disco_total, id_maquina, id_maquina, fk_empresaM, 'B',
+                       memoria_disponivel, id_maquina, id_maquina, fk_empresaM, 'B',
+                       memoria_total, id_maquina, id_maquina, fk_empresaM, 'B']
 
-            mycursor.execute(sql_query, val)
-            mydb.commit()
-            print(mycursor.rowcount, "registros inseridos no banco")
-            print("\r\n")
+                mycursor.execute(sql_query, val)
+                mydb.commit()
+                print(mycursor.rowcount, "registros inseridos no banco")
+                print("\r\n")
 
-    except mysql.connector.Error as e:
-        print("Erro ao conectar com o MySQL:", e)
+            except mysql.connector.Error as e:
+                print("Erro ao conectar com o MySQL:", e)
 
-    finally:
-        if mydb and mydb.is_connected():
-            mycursor.close()
+            finally:
+                if mydb and mydb.is_connected():
+                    mycursor.close()
+                else:
+                    print(f"A máquina {hostname} não foi cadastrada.")
 
-        time.sleep(30)  # Adicionado aqui se você desejar um atraso antes da próxima iteração
- 
+    except Exception as ex:
+        print(f"Erro geral: {ex}")
+
+time.sleep(30)  # Adicionado aqui se você desejar um atraso antes da próxima iteração
