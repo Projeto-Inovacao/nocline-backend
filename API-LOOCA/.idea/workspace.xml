@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c3da97eb-dd46-43a2-bb09-caf0684f9dbd" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../API-LOOCA1/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../API-LOOCA1/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../database/nocLine_ddl.sql" beforeDir="false" afterPath="$PROJECT_DIR$/../database/nocLine_ddl.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../database/nocLine_dml.sql" beforeDir="false" afterPath="$PROJECT_DIR$/../database/nocLine_dml.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../database/views.sql" beforeDir="false" afterPath="$PROJECT_DIR$/../database/views.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../python/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/../python/main.py" afterDir="false" />
-    </list>
+    <list default="true" id="c3da97eb-dd46-43a2-bb09-caf0684f9dbd" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -19,9 +13,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 6
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
   <component name="ProjectId" id="2WqjADJQTuQ8xwqcObJNUJ27OPL" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -32,8 +26,8 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "grafico",
-    "last_opened_file_path": "C:/Users/Gisele/Documents/noicline/nocline-backend/API-LOOCA1",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "/home/miguel/Documentos/Nocline/nocline-backend/API-LOOCA1",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>

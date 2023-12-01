@@ -12,9 +12,14 @@ import java.time.LocalDateTime
 class DadosRepositorios {
 
     lateinit var jdbcTemplate: JdbcTemplate
+    lateinit var jdbcTemplate_server: JdbcTemplate
 
     fun iniciar() {
         jdbcTemplate = Conexao.jdbcTemplate!!
+    }
+
+    fun iniciar_server() {
+        jdbcTemplate_server = Conexao.jdbcTemplate_server!!
     }
 
     fun cadastrarJanela(novaJanela: MutableList<Janela>?, id_maquina: Int, fk_empresa: Int) {
