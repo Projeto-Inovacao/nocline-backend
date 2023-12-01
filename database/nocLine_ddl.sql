@@ -201,8 +201,8 @@ CREATE TABLE IF NOT EXISTS componente (
   CONSTRAINT fk_componente_metrica
     FOREIGN KEY (fk_metrica_componente)
     REFERENCES metrica (id_metrica)
-);
--- alter table componente modify column fk_metrica_componente INT NULL;
+);alteralter
+-alter- alter table componente modify column fk_metrica_componente INT NULL;
 
 CREATE TABLE IF NOT EXISTS especificacao(
   id_especificacao INT NOT NULL,

@@ -10,7 +10,7 @@ SELECT * FROM empresa;
 
 -- INSERIR NA TABELA LINHA
 INSERT INTO  linha VALUES 
-(null, "azul", 1, 1);
+(null, 'azul', 1, 1);
 SELECT * FROM linha;
 
 -- INSERIR NA TABELA NÍVEL DE ACESSO
@@ -32,16 +32,16 @@ SELECT * FROM endereco;
 
 -- INSERIR NA TABELA PLANO
 INSERT INTO plano VALUES 
-(null, "Essentials", 10, 1230.00, 15.38), 
-(null, "Master", 25, 1340.00, 12.16), 
-(null, "Plus", 50, 1480.00, 10.55);
+(null, 'Essentials', 10, 1230.00, 15.38), 
+(null, 'Master', 25, 1340.00, 12.16), 
+(null, 'Plus', 50, 1480.00, 10.55);
 SELECT * FROM plano;
 
 select*from controle_acesso;
 
 -- INSERIR NA TABELA CONTRATO 
  INSERT INTO contrato VALUES
-(null, "2023-11-01", "2024-11-01", 0, 1480.00, "Crédito", 1, 3);
+(null, '2023-11-01', '2024-11-01', 0, 1480.00, 'Crédito', 1, 3);
 SELECT * FROM contrato;
 
 -- INSERIR NA TABELA LINHA 
@@ -67,8 +67,8 @@ INSERT INTO unidade_medida VALUES
  (null, 'Bytes', 'B'),
 (null, 'Porcentagem', '%'),
 (null, 'MegaBytes', 'MB'), 
-(null, "Graus Celsius", "°C"), 
-(null, "Hora", "H"); 
+(null, 'Graus Celsius', '°C'), 
+(null, 'Hora', 'H'); 
 SELECT * FROM unidade_medida;
 
 select * from metrica;
@@ -85,14 +85,6 @@ VALUES (4.04, 5.1, 2);
 INSERT INTO metrica (risco, perigo, fk_unidade_medida)
 VALUES (50.96, 50.99, 2);
 
--- metrica de disco
-INSERT INTO metrica (risco, perigo, fk_unidade_medida)
-VALUES (50.96, 50.99, 2);
-
--- metrica de disco
-INSERT INTO metrica (risco, perigo, fk_unidade_medida)
-VALUES (0.0, 0.0, 4);
-SELECT * FROM metrica;
 -- metrica de rede
 INSERT INTO metrica (risco, perigo, fk_unidade_medida)
 VALUES (176.45, 250.23, 3);
