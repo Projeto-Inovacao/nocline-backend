@@ -1,5 +1,5 @@
 -- DROP DATABASE nocline;
-CREATE DATABASE nocline;
+CREATE DATABASE IF NOT EXISTS nocline;
 USE nocline;
 
 CREATE TABLE IF NOT EXISTS empresa(
@@ -138,6 +138,7 @@ CREATE TABLE IF NOT EXISTS controle_acesso (
     FOREIGN KEY (fk_maquina, fk_empresa_maquina)
     REFERENCES maquina (id_maquina, fk_empresaM)
 );
+alter table controle_acesso modify column fk_maquina int null;
 
 CREATE TABLE IF NOT EXISTS janela (
   id_janela INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
@@ -156,6 +157,7 @@ CREATE TABLE IF NOT EXISTS janela (
 CREATE TABLE IF NOT EXISTS processos (
   pid INT PRIMARY KEY NOT NULL,
   nome_processo varchar(200),
+  data_hora DATETIME NOT NULL,
   uso_cpu DOUBLE NULL,
   uso_memoria DOUBLE NULL,
   memoria_virtual DOUBLE NULL,
@@ -168,6 +170,8 @@ CREATE TABLE IF NOT EXISTS processos (
     FOREIGN KEY (fk_maquinaP, fk_empresaP)
     REFERENCES maquina (id_maquina, fk_empresaM)
 );
+ALTER TABLE processos MODIFY gravacao_disco MEDIUMTEXT;
+ALTER TABLE processos MODIFY uso_cpu MEDIUMTEXT;
 
  CREATE TABLE IF NOT EXISTS unidade_medida (
   id_unidade INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
@@ -205,7 +209,9 @@ CREATE TABLE IF NOT EXISTS componente (
 -alter- alter table componente modify column fk_metrica_componente INT NULL;
 
 CREATE TABLE IF NOT EXISTS especificacao(
-  id_especificacao INT NOT NULL,
+  id_Processo INT NOT NULL AUTO_INCREMENT,
+  id_especificacao INT,
+  data_hora DATETIME NOT NULL,
   identificador VARCHAR(200) NULL,
   fabricante VARCHAR(45) NULL,
   frequencia MEDIUMTEXT NULL,
@@ -214,11 +220,13 @@ CREATE TABLE IF NOT EXISTS especificacao(
   fk_maquina_especificacao INT NOT NULL,
   fk_empresa_especificacao INT NOT NULL,
 CONSTRAINT pk_especificacao
-  PRIMARY KEY (id_especificacao, fk_componente_especificacao, fk_maquina_especificacao, fk_empresa_especificacao),
+  PRIMARY KEY (id_Processo,id_especificacao, fk_componente_especificacao, fk_maquina_especificacao, fk_empresa_especificacao),
   CONSTRAINT fk_especificacao_componente1
     FOREIGN KEY (fk_componente_especificacao , fk_maquina_especificacao, fk_empresa_especificacao)
     REFERENCES componente (id_componente, fk_maquina_componente , fk_empresa_componente)
 );
+-- alter table especificacao modify column id_monitoramento INT NOT NULL AUTO_INCREMENT;
+
 
 CREATE TABLE IF NOT EXISTS monitoramento (
   id_monitoramento INT NOT NULL AUTO_INCREMENT,

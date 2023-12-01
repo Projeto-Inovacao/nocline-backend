@@ -42,7 +42,7 @@ fun main() {
             repositorio.cadastrarCpu(novaCpu, id_maquina, fk_empresa )
 
 
-            TimeUnit.SECONDS.sleep(32)
+            TimeUnit.SECONDS.sleep(60)
         }
     } else {
         JOptionPane.showMessageDialog(
