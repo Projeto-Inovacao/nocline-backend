@@ -36,9 +36,9 @@ sleep 2
 # Verifica se alguma biblioteca está faltando
 if [ "$inst" == "S" ]; then
     echo "$(tput setaf 19)[Assistente NocLine]:$(tput setaf 7) Algumas bibliotecas estão faltando. Deseja instalá-las (S/N)?"
-    read -r inst
+    read get
 
-    if [ "$inst" == "S" ] || [ "$inst" == "s" ]; then
+    if [ \"$get\" == \"s\" ] || [ \"$get\" == \"S\" ]; then
         echo "$(tput setaf 19)[Assistente NocLine]:$(tput setaf 7) Irei começar as instalações então."
         sudo pip install psutil
         sudo pip install mysql-connector-python
@@ -53,4 +53,12 @@ if [ "$inst" == "S" ]; then
     fi
 fi
 
+main_file=$(find / -type f -name "main_LOCAL.py" 2>/dev/null)
+
+if [ -z "$main_file" ]; then
+    echo "$(tput setaf 19)[Assistente NocLine]:$(tput setaf 7) Arquivo main_LOCAL.py não encontrado."
+    exit 1
+fi
+
 echo "$(tput setaf 19)[Assistente NocLine]:$(tput setaf 7) Vou prosseguir com a execução da API então!"
+python3 "$main_file"
