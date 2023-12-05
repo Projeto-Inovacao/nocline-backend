@@ -29,7 +29,7 @@ keyboard.add_hotkey("esc", stop)
 while not event.is_set():
     try:
         if mydb is None or not mydb.is_connected():
-            mydb = mysql.connector.connect(host='localhost', user=usr, password=pswd, database='nocLine')
+            mydb = mysql.connector.connect(host='localhost', user=usr, password=pswd, database='nocline')
 
         cpu = psutil.cpu_times()
         processador = psutil.cpu_percent(interval=1)
@@ -138,8 +138,8 @@ while not event.is_set():
                         mydb_server.close()
 
             except pymssql.OperationalError as e:
-                print("MYSQL Server não está ativo, contate nossa equipe para mais detalhes")
-                print(e)
+                print("Houve um erro ao realizar o insert.")
+                print(f"Detalhes: {e}")
 
             try:
                 sql_query = """
