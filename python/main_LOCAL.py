@@ -105,7 +105,7 @@ while not event.is_set():
 
                 try:
                     mycursor_server = mydb_server.cursor()
-                    sql_query_server = "SELECT id_maquina, fk_empresaM FROM maquina WHERE hostname = %s;"
+                    sql_query_server = "SELECT TOP 1 id_maquina, fk_empresaM FROM maquina WHERE hostname = %s;"
                     mycursor_server.execute(sql_query_server, (hostname,))
                     result = mycursor_server.fetchone()
 
@@ -114,11 +114,11 @@ while not event.is_set():
                         data_hora_local = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                         sql_query = """
                                 INSERT INTO monitoramento (dado_coletado, data_hora, descricao, fk_componentes_monitoramento, fk_maquina_monitoramento, fk_empresa_monitoramento, fk_unidade_medida)
-                                VALUES (%s, %s, 'uso de cpu py', (SELECT id_componente from componente WHERE nome_componente = 'CPU' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s)),
-                                    (%s, %s, 'disco livre', (SELECT id_componente from componente WHERE nome_componente = 'DISCO' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s)),
-                                    (%s, %s, 'disco total', (SELECT id_componente from componente WHERE nome_componente = 'DISCO' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s)),
-                                    (%s, %s, 'memoria disponivel', (SELECT id_componente from componente WHERE nome_componente = 'RAM' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s)),
-                                    (%s, %s, 'memoria total', (SELECT id_componente from componente WHERE nome_componente = 'RAM' and fk_maquina_componente = %s), %s, %s, (SELECT id_unidade FROM unidade_medida WHERE representacao = %s));
+                                VALUES (%s, %s, 'uso de cpu py', (SELECT TOP 1 id_componente from componente WHERE nome_componente = 'CPU' and fk_maquina_componente = %s), %s, %s, (SELECT TOP 1 id_unidade FROM unidade_medida WHERE representacao = %s)),
+                                    (%s, %s, 'disco livre', (SELECT TOP 1 id_componente from componente WHERE nome_componente = 'DISCO' and fk_maquina_componente = %s), %s, %s, (SELECT TOP 1 id_unidade FROM unidade_medida WHERE representacao = %s)),
+                                    (%s, %s, 'disco total', (SELECT TOP 1 id_componente from componente WHERE nome_componente = 'DISCO' and fk_maquina_componente = %s), %s, %s, (SELECT TOP 1 id_unidade FROM unidade_medida WHERE representacao = %s)),
+                                    (%s, %s, 'memoria disponivel', (SELECT TOP 1 id_componente from componente WHERE nome_componente = 'RAM' and fk_maquina_componente = %s), %s, %s, (SELECT TOP 1 id_unidade FROM unidade_medida WHERE representacao = %s)),
+                                    (%s, %s, 'memoria total', (SELECT TOP 1 id_componente from componente WHERE nome_componente = 'RAM' and fk_maquina_componente = %s), %s, %s, (SELECT TOP 1 id_unidade FROM unidade_medida WHERE representacao = %s));
                             """
                         val = (cpu_percentual, data_hora_local, id_maquina, id_maquina, fk_empresaM, '%',
                                 disco_livre, data_hora_local, id_maquina, id_maquina, fk_empresaM, 'B',
