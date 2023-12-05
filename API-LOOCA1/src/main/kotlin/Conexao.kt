@@ -22,7 +22,7 @@ object Conexao {
             if (field == null){
                 val dataSource = BasicDataSource()
                 dataSource.driverClassName = "com.microsoft.sqlserver.jdbc.SQLServerDriver"
-                dataSource.url = "jdbc:sqlserver://52.22.58.174;database=nocline;encrypt=false;trustServerCertificate=false"
+                dataSource.url = "jdbc:sqlserver://52.22.58.174:1433;database=nocline;encrypt=false;trustServerCertificate=false"
                 dataSource.username = "sa"
                 dataSource.password = "urubu100"
                 val novoJdbcTemplate = JdbcTemplate(dataSource)
