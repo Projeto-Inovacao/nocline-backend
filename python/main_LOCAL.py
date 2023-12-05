@@ -10,7 +10,7 @@ import requests
 from datetime import datetime
 from cred import usr, pswd
 
-webhook_url = "https://hooks.slack.com/services/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"
+webhook_url = "https://hooks.slack.com/services/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"
 headers = {'Content-Type': 'application/json'}
 
 event = threading.Event()

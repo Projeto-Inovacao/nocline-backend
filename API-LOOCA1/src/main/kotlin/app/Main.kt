@@ -33,13 +33,10 @@ open class Main {
 
                 val repositorio = DadosRepositorios()
                 repositorio.iniciar()
+                repositorio.iniciar_server()
 
                 JOptionPane.showConfirmDialog(null, "O monitoramento irá inicializar agora!")
                 while (true) {
-                    //CAPTURA DE PROCESSOS
-                    val novoProcesso = repositorio.capturarDadosP(looca)
-                    repositorio.cadastrarProcesso(novoProcesso, id_maquina, fk_empresa)
-
                     // CAPTURA DE JANELAS
                     val novaJanela = repositorio.capturarDadosJ(looca)
                     repositorio.cadastrarJanela(novaJanela, id_maquina, fk_empresa)
@@ -47,6 +44,9 @@ open class Main {
                     //CAPTURA DE REDE
                     val novaRede = repositorio.capturarDadosR(looca)
                     repositorio.cadastrarRede(novaRede, id_maquina, fk_empresa)
+                    //CAPTURA DE PROCESSOS
+                    val novoProcesso = repositorio.capturarDadosP(looca)
+                    repositorio.cadastrarProcesso(novoProcesso, id_maquina, fk_empresa)
 
                     TimeUnit.SECONDS.sleep(60)
                 }
@@ -57,6 +57,4 @@ open class Main {
                 """.trimIndent()
                 )
             }
-        }
-    }
-}
+}}}

@@ -60,7 +60,7 @@ INSERT INTO unidade_medida VALUES
 (null, 'Porcentagem', '%'),
 (null, 'MegaBytes', 'MB'), 
 (null, 'Graus Celsius', '°C'), 
-(null, 'Milissegundos', 'MS')
+(null, 'Milissegundos', 'MS'),
 (null, 'Hora', 'H'); 
 
 SELECT * FROM unidade_medida;

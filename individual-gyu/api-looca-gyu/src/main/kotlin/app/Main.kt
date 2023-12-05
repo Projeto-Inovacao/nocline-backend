@@ -1,16 +1,21 @@
 package app
 
-import DadosRepositorios
-import LoginRepositorio
-import Usuario
 import com.github.britooo.looca.api.core.Looca
 import java.util.concurrent.TimeUnit
 import javax.swing.JOptionPane
+import Cpu
+import Janelas
+import LoginRepositorio
+import Maquina
+import Temperaturas
+import Usuario
+import Conexao
+import DadosRepositorios
 
 open class Main {
     companion object {
-        @JvmStatic
-        fun main(args: Array<String>) {
+        @JvmStatic fun main(args: Array<String>) {
+
 
             Conexao.criarTabelas()
 
@@ -21,7 +26,7 @@ open class Main {
             login.email = JOptionPane.showInputDialog("Digite o seu email:").toString()
             login.senha = JOptionPane.showInputDialog("Digite a sua senha:").toString()
 
-            dadoslogin.iniciar()
+            dadoslogin.iniciar_server()
             if (dadoslogin.validarLogin(login)) {
                 JOptionPane.showMessageDialog(null, dadoslogin.comprimentar(login))
 
@@ -32,14 +37,23 @@ open class Main {
                         .toInt()
 
                 val repositorio = DadosRepositorios()
+                repositorio.iniciar_server()
                 repositorio.iniciar()
 
                 JOptionPane.showConfirmDialog(null, "O monitoramento irá inicializar agora!")
                 while (true) {
 
-                    // CAPTURA DE JANELAS
+//                    // CAPTURA DE JANELAS
                     val novaJanela = repositorio.capturarDadosJ(looca)
                     repositorio.cadastrarJanela(novaJanela, id_maquina, fk_empresa)
+
+                    // CAPTURA DE TEMPERATURA
+                    val novaTemp = repositorio.capturarDadosT(looca)
+                    repositorio.cadastrarT(novaTemp, id_maquina, fk_empresa)
+
+                    // CAPTURA DE CPU
+                    val novaCpu = repositorio.capturarDadosCpu(looca)
+                    repositorio.cadastrarCpu(novaCpu, id_maquina, fk_empresa)
 
 
                     TimeUnit.SECONDS.sleep(60)
@@ -52,5 +66,6 @@ open class Main {
                 )
             }
         }
+
+        }
     }
-}

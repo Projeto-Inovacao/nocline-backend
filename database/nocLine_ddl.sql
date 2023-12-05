@@ -1,6 +1,13 @@
 -- DROP DATABASE nocline;
 CREATE DATABASE IF NOT EXISTS nocline;
 USE nocline;
+select * from janela order by data_hora desc;
+select * from monitoramento order by data_hora desc;
+select * from maquina;
+ select data_hora_inicializacao from maquina where id_maquina= 1;
+ 
+ 
+ select * from VW_ALERTAS_TABLE where fk_empresaM = 1 order by qtd_alerta_maquina desc;
 
 CREATE TABLE IF NOT EXISTS empresa(
   id_empresa INT PRIMARY KEY NOT NULL AUTO_INCREMENT, 
@@ -170,6 +177,7 @@ CREATE TABLE IF NOT EXISTS processos (
     FOREIGN KEY (fk_maquinaP, fk_empresaP)
     REFERENCES maquina (id_maquina, fk_empresaM)
 );
+alter table processos add column data_hora datetime after nome_processo;
 ALTER TABLE processos MODIFY gravacao_disco MEDIUMTEXT;
 ALTER TABLE processos MODIFY uso_cpu MEDIUMTEXT;
 
@@ -205,8 +213,8 @@ CREATE TABLE IF NOT EXISTS componente (
   CONSTRAINT fk_componente_metrica
     FOREIGN KEY (fk_metrica_componente)
     REFERENCES metrica (id_metrica)
-);alteralter
--alter- alter table componente modify column fk_metrica_componente INT NULL;
+);
+-- alter table componente modify column fk_metrica_componente INT NULL;
 
 CREATE TABLE IF NOT EXISTS especificacao(
   id_Processo INT NOT NULL AUTO_INCREMENT,

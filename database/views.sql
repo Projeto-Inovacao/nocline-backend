@@ -18,7 +18,9 @@ select * from VW_TEMP_CHART;
 select * from VW_DESEMPENHO_CHART;
 select * from VW_TEMPXCPU_CHART;
 select * from VW_DESEMPENHO_CHART_TEMP;
-
+desc especificacao;
+alter table especificacao modify column id_especificacao int auto_increment;
+select*from processos;
 
 -- view CPU - py
 CREATE VIEW VW_CPU_CHART AS
@@ -42,6 +44,7 @@ WHERE nome_componente = 'CPU' and descricao = "uso de cpu py";
 -- view CPU - kotlin
 CREATE VIEW VW_CPU_KOTLIN_CHART AS
 SELECT
+	id_monitoramento,
     ROUND(dado_coletado,2) as dado_coletado,
     Representacao,
     DATE_FORMAT(data_hora, "%Y-%m-%d %H:%i:%s") as data_hora,
@@ -62,6 +65,7 @@ WHERE nome_componente = 'CPU' and descricao="uso de cpu kt";
 -- view TEMPERATURA
 CREATE VIEW VW_TEMP_CHART AS
 SELECT
+	id_monitoramento, 
     dado_coletado,
     Representacao,
     DATE_FORMAT(data_hora, "%Y-%m-%d %H:%i:%s") as data_hora,
@@ -82,7 +86,8 @@ WHERE nome_componente = 'CPU' and descricao="temperatura cpu";
 -- view RAM
 CREATE VIEW VW_RAM_CHART AS
 SELECT
-    DISTINCT DATE_FORMAT(M1.data_hora, "%Y-%m-%d %H:%i:%s") AS data_hora,
+	DISTINCT DATE_FORMAT(M1.data_hora, "%Y-%m-%d %H:%i:%s") AS data_hora,
+	M2.id_monitoramento, 
     ROUND(((1 - M1.dado_coletado / M2.dado_coletado) * 100), 2) AS "usado",
     ROUND((M1.dado_coletado / M2.dado_coletado) * 100, 2) AS "livre",
     M2.dado_coletado AS "total",
@@ -147,6 +152,9 @@ GROUP BY
 -- view janelas
 create view VW_JANELAS_CHART as select nome_janela, status_abertura, fk_maquinaJ, fk_empresaJ from janela;
 
+
+select * from linha;
+
 -- view alertas
 create view VW_ALERTAS_TABLE as
 select
@@ -158,6 +166,7 @@ select
   M.modelo,
   M.status_maquina,
   M.fk_empresaM,
+  M.fk_linhaM,
   COUNT(DISTINCT M.id_maquina) AS qtd_maquina,
   COUNT(CASE WHEN A.tipo_alerta = "perigo" THEN A.id_alerta END) AS qtd_perigo,
   COUNT(CASE WHEN A.tipo_alerta = "risco" THEN A.id_alerta END) AS qtd_risco,
@@ -236,6 +245,7 @@ WHERE T.rn = 1;
 -- view individual gyu
 CREATE VIEW VW_DESEMPENHO_CHART_TEMP AS
 SELECT
+	id_monitoramento, 
     data_hora AS data_hora,
     'CPU' AS recurso,
     id_maquina AS id_maquina,
@@ -300,8 +310,7 @@ WHERE
     AND monitoramento.descricao IN ('uso de cpu kt', 'temperatura cpu')
 GROUP BY
     DATE_FORMAT(monitoramento.data_hora, "%Y-%m-%d %H:%i:%s"), componente.nome_componente, componente.fk_maquina_componente;
-use nocline;
-select * from monitoramento;
+
 
 select * from VW_MEDIA_RAM_POR_SETOR_E_LINHAS;
 -- Luize individual--
@@ -356,6 +365,89 @@ select * from maquina;
 
 
 
+SELECT
+    AVG(usado) AS media_uso_ram,
+    data_hora
+FROM
+    VW_RAM_CHART
+WHERE
+    id_maquina IN (
+        SELECT id_maquina
+        FROM maquina
+        WHERE fk_linhaM = 1
+    ) group by data_hora;
+
+    SELECT
+    AVG(dado_coletado) AS media_uso_cpu,
+    data_hora
+FROM
+    VW_CPU_CHART
+WHERE
+    id_maquina IN (
+        SELECT id_maquina
+        FROM maquina
+        WHERE fk_linhaM = 1
+    )group by data_hora ORDER BY
+    data_hora DESC;
+
+    -- Desempenho individual jonny
+
+CREATE VIEW VW_DESEMPENHO_CHART_MEDIA AS
+SELECT
+    C.data_hora,
+    'CPU' AS recurso,
+    C.id_maquina,
+    C.media_uso_cpu AS uso
+FROM (
+    SELECT
+        id_maquina,
+        data_hora,
+        AVG(dado_coletado) AS media_uso_cpu,
+        ROW_NUMBER() OVER (PARTITION BY id_maquina ORDER BY data_hora DESC) AS rn
+    FROM VW_CPU_CHART
+    WHERE id_maquina IN (SELECT id_maquina FROM maquina WHERE fk_linhaM = 1)
+    GROUP BY id_maquina, data_hora
+) AS C
+WHERE C.rn = 1
+
+UNION ALL
+
+SELECT
+    R.data_hora,
+    'RAM' AS recurso,
+    R.id_maquina,
+    R.media_uso_ram AS uso
+FROM (
+    SELECT
+        id_maquina,
+        data_hora,
+        AVG(usado) AS media_uso_ram,
+        ROW_NUMBER() OVER (PARTITION BY id_maquina ORDER BY data_hora DESC) AS rn
+    FROM VW_RAM_CHART
+    WHERE id_maquina IN (SELECT id_maquina FROM maquina WHERE fk_linhaM = 1)
+    GROUP BY id_maquina, data_hora
+) AS R
+WHERE R.rn = 1;
+
+SELECT *
+        FROM VW_DESEMPENHO_CHART_MEDIA
+        WHERE id_maquina IN (
+            SELECT id_maquina
+            FROM maquina
+            WHERE fk_linhaM = 1
+         ) limit 2;
+
+         SELECT
+  l.id_linha,
+  l.nome AS nome_linha,
+  l.numero AS numero_linha,
+  COUNT(m.id_maquina) AS quantidade_maquinas
+FROM
+  linha l
+LEFT JOIN
+  maquina m ON l.id_linha = m.fk_linhaM
+GROUP BY
+  l.id_linha, l.nome, l.numero;
 
 
 

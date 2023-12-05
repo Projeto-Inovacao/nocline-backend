@@ -26,7 +26,7 @@ class LoginRepositorio {
             return true
         } catch (e: EmptyResultDataAccessException) {
             println("Seu login não está no banco...")
-            return false // Ou outro valor padrão que faça sentido no seu contexto
+            return false
         }
     }
 
