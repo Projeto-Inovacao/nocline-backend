@@ -1,4 +1,8 @@
-til.concurrent.TimeUnit
+import com.github.britooo.looca.api.core.Looca // biblioteca para capturar informações do sistema
+import com.github.britooo.looca.api.group.janelas.Janela
+import com.github.britooo.looca.api.group.processos.Processo
+import java.time.LocalDateTime // biblioteca para lidar com informações de data e hora
+import java.util.concurrent.TimeUnit // biblioteca usada para manipulação de unidades de tempo.
 import javax.swing.JOptionPane
 
 
@@ -12,7 +16,7 @@ fun main() {
     login.email = JOptionPane.showInputDialog("Digite o seu email:").toString()
     login.senha = JOptionPane.showInputDialog("Digite a sua senha:").toString()
 
-    dadoslogin.iniciar()
+    dadoslogin.iniciar_server()
     if (dadoslogin.validarLogin(login)) {
         JOptionPane.showMessageDialog(null, dadoslogin.comprimentar(login))
 
@@ -24,14 +28,10 @@ fun main() {
 
         val repositorio = DadosRepositorios()
         repositorio.iniciar()
+        repositorio.iniciar_server()
 
         JOptionPane.showConfirmDialog(null, "O monitoramento irá inicializar agora!")
         while (true) {
-            //CAPTURA DE PROCESSOS
-            val novoProcesso = repositorio.capturarDadosP(looca)
-            repositorio.cadastrarProcesso(novoProcesso, id_maquina, fk_empresa)
-
-
             // CAPTURA DE JANELAS
             val novaJanela = repositorio.capturarDadosJ(looca)
             repositorio.cadastrarJanela(novaJanela, id_maquina, fk_empresa)
@@ -39,8 +39,11 @@ fun main() {
             //CAPTURA DE REDE
             val novaRede = repositorio.capturarDadosR(looca)
             repositorio.cadastrarRede(novaRede, id_maquina, fk_empresa)
+            //CAPTURA DE PROCESSOS
+            val novoProcesso = repositorio.capturarDadosP(looca)
+            repositorio.cadastrarProcesso(novoProcesso, id_maquina, fk_empresa)
 
-            TimeUnit.SECONDS.sleep(20)
+            TimeUnit.SECONDS.sleep(60)
         }
     } else {
         JOptionPane.showMessageDialog(
