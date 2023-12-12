@@ -2,7 +2,7 @@
 
 ## Sobre:
 
-Este repositório visa guardar todos arquivos que utilizamos como base técnica para o desenvolvimento do nosso projeto, isso inclui scripts shell, API de captura de dados de máquina desenvolvida em Kotlin e Python, files de criação, inserts e views do banco de dados, . 
+Este repositório visa guardar todos arquivos que utilizamos como base técnica para o desenvolvimento do nosso projeto, isso inclui scripts shell, API de captura de dados de máquina desenvolvida em Kotlin e Python e files de criação, inserts e views do banco de dados. 
 
 
 
