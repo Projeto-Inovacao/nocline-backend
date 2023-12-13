@@ -54,4 +54,4 @@ if [ "$inst" == "S" ]; then
 fi
 
 echo "$(tput setaf 19)[Assistente NocLine]:$(tput setaf 7) Vou prosseguir com a execução da API então!"
-sudo python3 "$main_file"
+sudo python3 main_LOCAL.py
